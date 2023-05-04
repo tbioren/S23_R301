@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.swing.JFileChooser;
+
 /**this should be the good version
  * @author S23_R301
  * 
@@ -18,9 +20,6 @@ import java.util.Scanner;
  *
  */
 public class Chromosome {
-	private static final String DEFAULT_PATH = "chromosome_"; //chromosome_fileNum.csv
-	private int fileNum;
-	private static final String BLANK_PATH = "blank.csv";
 	private byte[] genes;
 	private File geneFile;
 	private Color COLOR_0 = Color.BLACK;
@@ -29,7 +28,9 @@ public class Chromosome {
 	private ArrayList<Rectangle> geneRectangles;
 	
 	public Chromosome() throws IOException, IncorrectFileSizeException {
-		this(new File(BLANK_PATH));
+		geneFile = null;
+		genes = new byte[0];
+		geneRectangles = new ArrayList<Rectangle>();
 	}
 
 	public Chromosome(String path) throws IOException, IncorrectFileSizeException {
@@ -37,7 +38,6 @@ public class Chromosome {
 	}
 	
 	public Chromosome(File f) throws IOException, IncorrectFileSizeException {
-		fileNum = 1;
 		geneFile = f;
 		geneRectangles = new ArrayList<Rectangle>();
 		readToGenes(geneFile);
@@ -77,11 +77,16 @@ public class Chromosome {
 	 * @throws IOException
 	 */
 	public void writeToFile() throws IOException {
-		File newFile = new File(DEFAULT_PATH + fileNum + ".csv");
-		fileNum++;
-		FileWriter fw = new FileWriter(newFile, false);
-		for(int i = 0; i < genes.length; i++) {
-			fw.write(String.valueOf(genes[i]) + ",");
+		JFileChooser fc = new JFileChooser();
+		fc.setDialogTitle("Specify a file to save");   
+		int userSelection = fc.showSaveDialog(null);
+		if (userSelection == JFileChooser.APPROVE_OPTION) {
+			File fileToSave = fc.getSelectedFile();
+			System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+		}
+		FileWriter fw = new FileWriter(fc.getSelectedFile());
+		for(int i=0; i < genes.length; i++) {
+			fw.write(genes[i] + ",");
 		}
 		fw.close();
 	}
@@ -142,6 +147,7 @@ public class Chromosome {
 	}
 
 	public String getFileName() {
+		if (geneFile == null) return "No file selected";
 		return geneFile.getName();
 	}
 	

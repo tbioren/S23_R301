@@ -20,7 +20,6 @@ import javax.swing.JTextField;
  * 
  */
 public class MainApp {
-	private final String PATH = "fail";
 	private final String FRAME_TITLE = "Chromosome Thingiemabob";
     private final int FRAME_WIDTH = 600;
     private final int FRAME_HEIGHT = 700;
@@ -135,7 +134,7 @@ public class MainApp {
 		try {
 			mainApp.runApp();
 		} catch (IncorrectFileSizeException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}		
 	} // main
