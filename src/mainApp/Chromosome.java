@@ -71,9 +71,8 @@ public class Chromosome {
 	}
 	
 	/**
-	 * Writes the current chromosome into a file
+	 * Writes the current chromosome into a user-selected file
 	 * 
-	 * @throws IncorrectFileSizeException
 	 * @throws IOException
 	 */
 	public void writeToFile() throws IOException {
