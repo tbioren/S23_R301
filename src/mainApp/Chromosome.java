@@ -19,8 +19,7 @@ import javax.swing.JFileChooser;
  * individual instances of chromosomes.
  *
  */
-public class Chromosome {
-	private byte[] genes;
+public class Chromosome extends SimpleChromosome{
 	private File geneFile;
 	private Color COLOR_0 = Color.BLACK;
 	private Color COLOR_1 = Color.GREEN;
@@ -28,8 +27,8 @@ public class Chromosome {
 	private ArrayList<Rectangle> geneRectangles;
 	
 	public Chromosome() throws IOException, IncorrectFileSizeException {
+		super();
 		geneFile = null;
-		genes = new byte[0];
 		geneRectangles = new ArrayList<Rectangle>();
 	}
 
@@ -91,17 +90,6 @@ public class Chromosome {
 	}
 	
 	/**
-	 * Goes through the genes and mutate them according to the given mutation rate
-	 * @param rate
-	 */
-	public void mutate(double rate) {
-		for(int i=0; i < genes.length; i++) {
-			// Will only handle 1 or 0. Need to refactor to handle "?".
-			if(Math.random() < rate) genes[i] = (byte) (genes[i] == 0 ? 1 : 0);
-		}
-	}
-	
-	/**
 	 * Draws the genes of the chromosome into a 10x10 or 2x10 grid
 	 * 
 	 * @param x
@@ -135,14 +123,6 @@ public class Chromosome {
 				flipBit(geneRectangles.indexOf(r));
 			}
 		}
-	}
-	
-	/**
-	 * flips the given bit/gene of the chromosome
-	 * @param n
-	 */
-	public void flipBit(int n) {
-		genes[n] = (byte) (genes[n] == 0 ? 1 : 0);
 	}
 
 	public String getFileName() {
