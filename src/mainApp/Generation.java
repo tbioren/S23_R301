@@ -208,4 +208,23 @@ public class Generation {
         }
         Arrays.sort(generation);
     }
+    
+    public byte getBestFitness(FitnessMethod fitnessMethod) {
+    	sortGeneration(fitnessMethod);
+    	return (byte)generation[generation.length - 1].getFitness();
+    }
+    
+    public byte getWorstFitness(FitnessMethod fitnessMethod) {
+    	sortGeneration(fitnessMethod);
+    	return (byte)generation[0].getFitness();
+    }
+    
+    public byte getAvgFitness(FitnessMethod fitnessMethod) {
+    	int sum = 0;
+    	sortGeneration(fitnessMethod);
+    	for(SimpleChromosome chromo : generation) {
+    		sum += chromo.getFitness();
+    	}
+    	return (byte)(sum / generation.length);
+    }
 }
