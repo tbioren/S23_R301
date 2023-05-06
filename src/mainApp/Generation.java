@@ -40,6 +40,9 @@ public class Generation {
         ArrayList<SimpleChromosome> eliteChromosomes = getElites(elitismNumber);
         ArrayList<SimpleChromosome> genSansElites = trimElites(eliteChromosomes);
         ArrayList<SimpleChromosome> bestChromosomes;
+        for(SimpleChromosome chromosome : genSansElites) {
+            chromosome.setFitness(fitnessMethod);
+        }
         switch(selectionMethod) {
             default:
                 bestChromosomes = selectTopHalf(genSansElites);
@@ -51,13 +54,23 @@ public class Generation {
                 bestChromosomes = selectRank(genSansElites);
                 break;
         }
-        bestChromosomes = crossover(bestChromosomes);
+        //bestChromosomes = crossover(bestChromosomes);
         ArrayList<SimpleChromosome> newGeneration = mutate(bestChromosomes, mutationRate);
         for(SimpleChromosome chromosome : eliteChromosomes) {
             newGeneration.add(chromosome);
         }
         generation = newGeneration.toArray(new SimpleChromosome[0]);
+        printAverageFitness(fitnessMethod);
         //System.out.prntln();
+    }
+
+    public void printAverageFitness(FitnessMethod fitnessMethod) {
+        int totalFitness = 0;
+        for(SimpleChromosome chromosome : generation) {
+            chromosome.setFitness(fitnessMethod);
+            totalFitness += chromosome.getFitness();
+        }
+        System.out.println("Average fitness: " + totalFitness/generation.length);
     }
 
     private ArrayList<SimpleChromosome> mutate(ArrayList<SimpleChromosome> bestChromosomes, double mutationRate) {
@@ -96,10 +109,9 @@ public class Generation {
     }
 
     private ArrayList<SimpleChromosome> getElites(double elitismNumber) {
-        ArrayList<SimpleChromosome> generation = new ArrayList<SimpleChromosome>(Arrays.asList(this.generation));
         ArrayList<SimpleChromosome> elites = new ArrayList<SimpleChromosome>();
         for(int i=0; i < elitismNumber; i++) {
-            elites.add(generation.get(i));
+            elites.add(generation[generation.length-i-1]);
         }
         return elites;
     }
@@ -115,7 +127,7 @@ public class Generation {
 
     private ArrayList<SimpleChromosome> selectTopHalf(ArrayList<SimpleChromosome> newGen) {
         ArrayList<SimpleChromosome> newGeneration = new ArrayList<SimpleChromosome>();
-        for(int i=0; i < generation.length/2; i++) {
+        for(int i=newGen.size(); i < newGen.size()/2; i--) {
             newGeneration.add(newGen.get(i));
         }
         return newGeneration;
@@ -124,7 +136,7 @@ public class Generation {
     private ArrayList<SimpleChromosome> selectRoulette(ArrayList<SimpleChromosome> newGen) {
         ArrayList<Integer> roulette = new ArrayList<>();
         for (int i = 0; i < newGen.size(); i++) {
-            for (int j = 0; j < newGen.get(i).fitness; j++) {
+            for (int j = 0; j < newGen.get(i).getFitness(); j++) {
                 roulette.add(i);
             }
         }
@@ -155,8 +167,8 @@ public class Generation {
     }
 
     private void sortGeneration(FitnessMethod method) {
-        for(SimpleChromosome chomo : generation) {
-            chomo.setFitness(method);
+        for(SimpleChromosome chromo : generation) {
+            chromo.setFitness(method);
         }
         Arrays.sort(generation);
     }
