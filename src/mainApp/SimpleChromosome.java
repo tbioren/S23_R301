@@ -1,8 +1,8 @@
 package mainApp;
 
 public class SimpleChromosome implements Comparable<SimpleChromosome>{
-    byte[] genes;
-    int fitness;
+    protected byte[] genes;
+    private int fitness;
 
     public SimpleChromosome() {
         genes = new byte[0];
