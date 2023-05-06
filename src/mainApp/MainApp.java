@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,8 +23,11 @@ import javax.swing.JTextField;
  */
 public class MainApp {
 	private final String FRAME_TITLE = "Chromosome Thingiemabob";
+	private final String GENERATION_FRAME_TITLE = "Evolution Viewer";
     private final int FRAME_WIDTH = 600;
     private final int FRAME_HEIGHT = 700;
+    public static final int GENERATION_FRAME_WIDTH = 1200;
+    public static final int GENERATION_FRAME_HEIGHT = 600;
 	
 	/**
 	 * Manages the general structure of the app. Serves as the graphics viewer class that manages the 
@@ -44,6 +49,65 @@ public class MainApp {
 		frame.add(chromosome, BorderLayout.CENTER);
 		frame.setTitle(chromosome.getFileName());
 		frame.setVisible(true);
+		
+		JFrame generationFrame = new JFrame();
+		generationFrame.setTitle(GENERATION_FRAME_TITLE);
+		generationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		GenerationComponent generation = new GenerationComponent();
+		generationFrame.add(generation, BorderLayout.CENTER);
+		generationFrame.setVisible(true);
+		
+		//Generation Frame buttons & misc
+		JPanel labelPanel = new JPanel();
+		frame.add(labelPanel, BorderLayout.NORTH);
+		
+		JLabel generationViewerLabel = new JLabel("Generation Viewer");
+		labelPanel.add(generationViewerLabel);
+		
+		JPanel interactionPanel = new JPanel();
+		generationFrame.add(interactionPanel, BorderLayout.SOUTH);
+		
+		JLabel mutationTextLabel = new JLabel("Mutation Rate (decimal) ");
+		JTextField mutationTextField = new JTextField(3);
+		interactionPanel.add(mutationTextLabel);
+		interactionPanel.add(mutationTextField);
+		
+		String[] selectionMethod = {"Truncation", "Roulette", "Rank"};
+		JLabel selectionTextLabel = new JLabel("Selection ");
+		JComboBox selectionBox = new JComboBox(selectionMethod);
+		interactionPanel.add(selectionTextLabel);
+		interactionPanel.add(selectionBox);
+		
+		JLabel crossoverYN = new JLabel("Crossover Y/N?");
+		JCheckBox crossoverCheck = new JCheckBox();
+		interactionPanel.add(crossoverYN);
+		interactionPanel.add(crossoverCheck);
+		
+		JLabel populationSizeLabel = new JLabel("Population Size ");
+		JTextField populationTextField = new JTextField(3);
+		interactionPanel.add(populationSizeLabel);
+		interactionPanel.add(populationTextField);
+		
+		JLabel generationLabel = new JLabel("Generations ");
+		JTextField generationTextField = new JTextField(5);
+		interactionPanel.add(generationLabel);
+		interactionPanel.add(generationTextField);
+		
+		JLabel genomeLengthLabel = new JLabel("Genome Length ");
+		JTextField genomeTextField = new JTextField(3);
+		interactionPanel.add(genomeLengthLabel);
+		interactionPanel.add(genomeTextField);
+		
+		JLabel elitismLabel = new JLabel("Elitism (decimal) ");
+		JTextField elitismTextField = new JTextField(3);
+		interactionPanel.add(elitismLabel);
+		interactionPanel.add(elitismTextField);
+		
+		JButton evolutionButton = new JButton("Start Evolution");
+		interactionPanel.add(evolutionButton);
+		
+		generationFrame.pack();
+		generationFrame.setSize(GENERATION_FRAME_WIDTH, GENERATION_FRAME_HEIGHT);
 		
 		
 		//Manage buttons and text field
