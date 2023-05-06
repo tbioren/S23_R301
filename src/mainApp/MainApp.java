@@ -34,7 +34,7 @@ public class MainApp {
 	 */
 	private void runApp() throws IOException, IncorrectFileSizeException {
 		Generation g = new Generation(100010100, 100, 100);
-		g.evolveLoop(FitnessMethod.ONES, SelectionMethod.TOP_HALF, 0.5, 0, 1000);
+		g.evolveLoop(FitnessMethod.ONES, SelectionMethod.RANK, 0.0001, 1, 10000);
 		//Set up JFrame and ChromosomeComponent
 		JFrame frame = new JFrame();
 		frame.setTitle(FRAME_TITLE);
