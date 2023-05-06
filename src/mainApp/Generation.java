@@ -182,7 +182,6 @@ public class Generation {
     }
 
     // Selects the chromosomes from the generation with the given selection method (I'm not sure if this works)
-    // TODO: Fix this
     private ArrayList<SimpleChromosome> selectRank(ArrayList<SimpleChromosome> newGen) {
         for(int i=0; i < newGen.size(); i++) {
             newGen.get(i).setFitness(i+1);
