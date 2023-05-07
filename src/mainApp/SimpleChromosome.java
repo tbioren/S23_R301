@@ -3,6 +3,9 @@ package mainApp;
 public class SimpleChromosome implements Comparable<SimpleChromosome>{
     protected byte[] genes;
     private int fitness;
+    private final byte[] SMILEY_COMPARISON = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,0,0,1,1,0,0,1,1,1,1,0,0,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,0,1,1,1,1,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 
     public SimpleChromosome() {
         genes = new byte[0];
@@ -64,7 +67,7 @@ public class SimpleChromosome implements Comparable<SimpleChromosome>{
     private void getFitnessCompareToChromosome() {
         int fitness = 0;
         for (int i = 0; i < genes.length; i++) {
-            if(genes[i] == 1) fitness++;
+            if(genes[i] == SMILEY_COMPARISON[i]) fitness++;
         }
         this.fitness = fitness;
     }
