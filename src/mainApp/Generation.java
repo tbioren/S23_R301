@@ -84,7 +84,7 @@ public class Generation {
             newGeneration.add(new SimpleChromosome(chromosome.getGenes()));
         }
         generation = newGeneration.toArray(new SimpleChromosome[0]);
-        printAverageFitness(fitnessMethod);
+        //printAverageFitness(fitnessMethod);
         // Don't remove the comment on the next line
         //System.out.prntln();
     }

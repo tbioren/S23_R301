@@ -4,13 +4,16 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.ArrayList;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JComponent;
 
 
 public class GenerationComponent extends JComponent {
-  	private static final int LINE_WIDTH  = 2;
+	
   	private static final int SIDE_OFFSET = 30;
   	private static final int TOP_OFFSET = 50;
   	private static final int BOTTOM_OFFSET = 50;
@@ -19,16 +22,14 @@ public class GenerationComponent extends JComponent {
   	private static final double LEGEND_Y_OFFSET_RATIO = 0.2;
   	private static final int LEGEND_SQUARE_SIZE = 10;
   	
+  	private static final int DELAY = 100;
+  	
   	private static final Color BEST_COLOR = Color.green;
   	private static final Color WORST_COLOR = Color.red;
   	private static final Color AVERAGE_COLOR = Color.yellow;
   	
   	private Generation generation;
   	private int genNum;
-
-  	private ArrayList<Byte> bestChromo;
-  	private ArrayList<Byte> worstChromo;
-  	private ArrayList<Byte> averageChromo;
   	
   	public GenerationComponent() {
   		this.setPreferredSize(new Dimension(MainApp.GENERATION_FRAME_WIDTH, MainApp.GENERATION_FRAME_HEIGHT) );
@@ -115,6 +116,13 @@ public class GenerationComponent extends JComponent {
   			g2.setColor(WORST_COLOR);
   			g2.drawLine(xInc * (i - 1), -prevGenWorst * yInc, xInc * i, -generation.getWorstFitness(FitnessMethod.ONES) * yInc);
   			prevGenWorst = generation.getWorstFitness(FitnessMethod.ONES);
+  			
+  			try {
+				TimeUnit.MILLISECONDS.sleep(DELAY);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
   		}
   	}
 }

@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 /**this should be the good version
  * Class: MainApp
@@ -26,8 +27,10 @@ public class MainApp {
 	private final String GENERATION_FRAME_TITLE = "Evolution Viewer";
     private final int FRAME_WIDTH = 600;
     private final int FRAME_HEIGHT = 700;
+    private final int DELAY = 50;
     public static final int GENERATION_FRAME_WIDTH = 1200;
     public static final int GENERATION_FRAME_HEIGHT = 600;
+    
 	
 	/**
 	 * Manages the general structure of the app. Serves as the graphics viewer class that manages the 
@@ -39,11 +42,9 @@ public class MainApp {
 	 */
 	private void runApp() throws IOException, IncorrectFileSizeException {
 		Generation g = new Generation(100010100, 100, 100);
-		g.evolveLoop(FitnessMethod.ONES, SelectionMethod.RANK, 0.0001, 1, 10000);
 		//Set up JFrame and ChromosomeComponent
 		JFrame frame = new JFrame();
 		frame.setTitle(FRAME_TITLE);
-		//frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		ChromosomeComponent chromosome = new ChromosomeComponent();
 		frame.add(chromosome, BorderLayout.CENTER);
@@ -187,6 +188,15 @@ public class MainApp {
 		frame.pack();
 		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		
+		Timer t = new Timer(DELAY, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
+		
+		//Starts the simulator
+		t.start();
 	} // runApp
 
 	/**
