@@ -19,7 +19,7 @@ public class MainApp {
 	private final String GENERATION_FRAME_TITLE = "Evolution Viewer";
     private final int FRAME_WIDTH = 600;
     private final int FRAME_HEIGHT = 700;
-    private final int DELAY = 50;
+    private final int DELAY = 5;
     public static final int GENERATION_FRAME_WIDTH = 1200;
     public static final int GENERATION_FRAME_HEIGHT = 600;
     
@@ -33,7 +33,7 @@ public class MainApp {
 	 * @throws IncorrectFileSizeException
 	 */
 	private void runApp() throws IOException, IncorrectFileSizeException {
-		Generation g = new Generation(100010100, 100, 100);
+		
 		//Set up JFrame and ChromosomeComponent
 		JFrame frame = new JFrame();
 		frame.setTitle(FRAME_TITLE);
@@ -48,7 +48,6 @@ public class MainApp {
 		generationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GenerationComponent generation = new GenerationComponent();
 		generationFrame.add(generation, BorderLayout.CENTER);
-		generationFrame.setVisible(true);
 		
 		//Generation Frame buttons & misc
 		JPanel labelPanel = new JPanel();
@@ -99,8 +98,6 @@ public class MainApp {
 		JButton evolutionButton = new JButton("Start Evolution");
 		interactionPanel.add(evolutionButton);
 		
-		generationFrame.pack();
-		generationFrame.setSize(GENERATION_FRAME_WIDTH, GENERATION_FRAME_HEIGHT);
 		
 		
 		//Manage buttons and text field
@@ -183,13 +180,20 @@ public class MainApp {
 		Timer t = new Timer(DELAY, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				
 				generation.update();
 				generation.repaint();
+				
+				generationFrame.repaint();
+				
 			}
 		});
 		
 		//Starts the simulator
 		t.start();
+		generationFrame.setVisible(true);
+		generationFrame.pack();
+		generationFrame.setSize(GENERATION_FRAME_WIDTH, GENERATION_FRAME_HEIGHT);
 	} // runApp
 
 	/**
