@@ -131,31 +131,30 @@ public class GenerationComponent extends JComponent {
 //  			prevGenWorst = generation.getWorstFitness(FitnessMethod.ONES);
 //
 //  		}
+  		if(genCount < genNum) {
+  			g2.translate(SIDE_OFFSET, this.getHeight()-BOTTOM_OFFSET);
+  			
+  			g2.setColor(BEST_COLOR);
+  			g2.drawLine(xInc * (genCount - 1), -prevGenBest * yInc, xInc * genCount, -generation.getBestFitness(FitnessMethod.ONES) * yInc);
+  			
+  			g2.setColor(AVERAGE_COLOR);
+  			g2.drawLine(xInc * (genCount - 1), -prevGenAvg * yInc, xInc * genCount, -generation.getAvgFitness(FitnessMethod.ONES) * yInc);
+  			
+  			g2.setColor(WORST_COLOR);
+			g2.drawLine(xInc * (genCount - 1), -prevGenWorst * yInc, xInc * genCount, -generation.getWorstFitness(FitnessMethod.ONES) * yInc);
+  		}
   		
   	}
   	
   	public void update() {
-  		Graphics g = this.getGraphics();
-  		Graphics2D g2 = (Graphics2D)g;
   		
   		if(genCount < genNum) {
-  			g2.translate(SIDE_OFFSET, this.getHeight()-BOTTOM_OFFSET);
   		
   			generation.evolve(FitnessMethod.ONES, SelectionMethod.TOP_HALF, 0.001, 0);
-		
-  			g2.setColor(BEST_COLOR);
-  			g2.drawLine(xInc * (genCount - 1), -prevGenBest * yInc, xInc * genCount, -generation.getBestFitness(FitnessMethod.ONES) * yInc);
   			prevGenBest = generation.getBestFitness(FitnessMethod.ONES);
-		
-  			g2.setColor(AVERAGE_COLOR);
-  			g2.drawLine(xInc * (genCount - 1), -prevGenAvg * yInc, xInc * genCount, -generation.getAvgFitness(FitnessMethod.ONES) * yInc);
   			prevGenAvg = generation.getAvgFitness(FitnessMethod.ONES);
-			
-  			g2.setColor(WORST_COLOR);
-			g2.drawLine(xInc * (genCount - 1), -prevGenWorst * yInc, xInc * genCount, -generation.getWorstFitness(FitnessMethod.ONES) * yInc);
 			prevGenWorst = generation.getWorstFitness(FitnessMethod.ONES);
 		
-			//g2.translate(-SIDE_OFFSET, -this.getHeight()+BOTTOM_OFFSET);
 			genCount++;
   		}
   	}
