@@ -116,13 +116,7 @@ public class GenerationComponent extends JComponent {
   			g2.setColor(WORST_COLOR);
   			g2.drawLine(xInc * (i - 1), -prevGenWorst * yInc, xInc * i, -generation.getWorstFitness(FitnessMethod.ONES) * yInc);
   			prevGenWorst = generation.getWorstFitness(FitnessMethod.ONES);
-  			
-  			try {
-				TimeUnit.MILLISECONDS.sleep(DELAY);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
   		}
   	}
 }
