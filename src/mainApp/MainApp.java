@@ -5,15 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.Timer;
+import javax.swing.*;
 
 /**this should be the good version
  * Class: MainApp
@@ -191,7 +183,8 @@ public class MainApp {
 		Timer t = new Timer(DELAY, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+				generation.update();
+				generation.repaint();
 			}
 		});
 		

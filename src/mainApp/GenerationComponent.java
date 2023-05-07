@@ -31,10 +31,23 @@ public class GenerationComponent extends JComponent {
   	private Generation generation;
   	private int genNum;
   	
+  	private int prevGenBest;
+	private int prevGenWorst;
+	private int prevGenAvg;
+	private int xInc;
+	private int yInc;
+	private int genCount;
+  	
   	public GenerationComponent() {
   		this.setPreferredSize(new Dimension(MainApp.GENERATION_FRAME_WIDTH, MainApp.GENERATION_FRAME_HEIGHT) );
   		generation = new Generation(42, 100, 100);
   		genNum = 100;
+  		prevGenBest = generation.getBestFitness(FitnessMethod.ONES);
+  		prevGenWorst = generation.getWorstFitness(FitnessMethod.ONES);
+  		prevGenAvg = generation.getAvgFitness(FitnessMethod.ONES);
+  		xInc = (this.getWidth() - SIDE_OFFSET * 2) / genNum;
+  		yInc = (this.getHeight() - TOP_OFFSET - BOTTOM_OFFSET) / 100;
+  		genCount = 0;
   	}
   	
   	
@@ -102,21 +115,48 @@ public class GenerationComponent extends JComponent {
   		int prevGenAvg = generation.getAvgFitness(FitnessMethod.ONES);
   		int xInc = (this.getWidth() - SIDE_OFFSET * 2) / genNum;
   		int yInc = (this.getHeight() - TOP_OFFSET - BOTTOM_OFFSET) / 100;
-  		for(int i = 1; i < genNum; i++) {
-  			generation.evolve(FitnessMethod.ONES, SelectionMethod.TOP_HALF, 0.5, 0);
-  			
+//  		for(int i = 1; i < genNum; i++) {
+//  			generation.evolve(FitnessMethod.ONES, SelectionMethod.TOP_HALF, 0.001, 0);
+//  			
+//  			g2.setColor(BEST_COLOR);
+//  			g2.drawLine(xInc * (i - 1), -prevGenBest * yInc, xInc * i, -generation.getBestFitness(FitnessMethod.ONES) * yInc);
+//  			prevGenBest = generation.getBestFitness(FitnessMethod.ONES);
+//  			
+//  			g2.setColor(AVERAGE_COLOR);
+//  			g2.drawLine(xInc * (i - 1), -prevGenAvg * yInc, xInc * i, -generation.getAvgFitness(FitnessMethod.ONES) * yInc);
+//  			prevGenAvg = generation.getAvgFitness(FitnessMethod.ONES);
+//  			System.out.println(prevGenAvg);
+//  			g2.setColor(WORST_COLOR);
+//  			g2.drawLine(xInc * (i - 1), -prevGenWorst * yInc, xInc * i, -generation.getWorstFitness(FitnessMethod.ONES) * yInc);
+//  			prevGenWorst = generation.getWorstFitness(FitnessMethod.ONES);
+//
+//  		}
+  		
+  	}
+  	
+  	public void update() {
+  		Graphics g = this.getGraphics();
+  		Graphics2D g2 = (Graphics2D)g;
+  		
+  		if(genCount < genNum) {
+  			g2.translate(SIDE_OFFSET, this.getHeight()-BOTTOM_OFFSET);
+  		
+  			generation.evolve(FitnessMethod.ONES, SelectionMethod.TOP_HALF, 0.001, 0);
+		
   			g2.setColor(BEST_COLOR);
-  			g2.drawLine(xInc * (i - 1), -prevGenBest * yInc, xInc * i, -generation.getBestFitness(FitnessMethod.ONES) * yInc);
+  			g2.drawLine(xInc * (genCount - 1), -prevGenBest * yInc, xInc * genCount, -generation.getBestFitness(FitnessMethod.ONES) * yInc);
   			prevGenBest = generation.getBestFitness(FitnessMethod.ONES);
-  			
+		
   			g2.setColor(AVERAGE_COLOR);
-  			g2.drawLine(xInc * (i - 1), -prevGenAvg * yInc, xInc * i, -generation.getAvgFitness(FitnessMethod.ONES) * yInc);
+  			g2.drawLine(xInc * (genCount - 1), -prevGenAvg * yInc, xInc * genCount, -generation.getAvgFitness(FitnessMethod.ONES) * yInc);
   			prevGenAvg = generation.getAvgFitness(FitnessMethod.ONES);
-  			
+			
   			g2.setColor(WORST_COLOR);
-  			g2.drawLine(xInc * (i - 1), -prevGenWorst * yInc, xInc * i, -generation.getWorstFitness(FitnessMethod.ONES) * yInc);
-  			prevGenWorst = generation.getWorstFitness(FitnessMethod.ONES);
-
+			g2.drawLine(xInc * (genCount - 1), -prevGenWorst * yInc, xInc * genCount, -generation.getWorstFitness(FitnessMethod.ONES) * yInc);
+			prevGenWorst = generation.getWorstFitness(FitnessMethod.ONES);
+		
+			//g2.translate(-SIDE_OFFSET, -this.getHeight()+BOTTOM_OFFSET);
+			genCount++;
   		}
   	}
 }
