@@ -4,11 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.concurrent.TimeUnit;
 
 import javax.swing.JComponent;
 
@@ -26,35 +22,44 @@ public class GenerationComponent extends JComponent {
   	private final Color BEST_COLOR = Color.green;
   	private final Color WORST_COLOR = Color.red;
   	private final Color AVERAGE_COLOR = Color.yellow;
+	private final Color DIVERSITY_COLOR = Color.BLUE;
+
+	private final int TERMINATION_GENERATIONS = 200;
+	private final int TERMINATION_FITNESS = 101;
+	private final FitnessMethod FITNESS_METHOD = FitnessMethod.ONES;
   	
   	
   	private Generation generation;
-  	private int genNum;
   	
   	private ArrayList<Byte> bestLog;
 	private ArrayList<Byte> worstLog;
 	private ArrayList<Byte> avgLog;
+	private ArrayList<Integer> diversityLog;
 	private double xInc;
 	private double yInc;
 	private int genCount;
+	private double diversityNormilizer;
 	private double mutationRate;
-  	private FitnessMethod fitnessMethod;
-  	private SelectionMethod selectionMethod;
+  private FitnessMethod fitnessMethod;
+  private SelectionMethod selectionMethod;
 	
 	public GenerationComponent() {
 		this((long)(Math.random() * Long.MAX_VALUE), 100, 100, 100, 0.001, FitnessMethod.ONES, SelectionMethod.TOP_HALF);
 	}
 	
-  	public GenerationComponent(long seed, int generationSize, int chromosomeSize, int genNum, double mutationRate, FitnessMethod fm, SelectionMethod sm) {
+  public GenerationComponent(long seed, int generationSize, int chromosomeSize, int genNum, double mutationRate, FitnessMethod fm, SelectionMethod sm) {
   		this.setPreferredSize(new Dimension(MainApp.GENERATION_FRAME_WIDTH, MainApp.GENERATION_FRAME_HEIGHT) );
   		generation = new Generation(seed, generationSize, chromosomeSize);
   		this.genNum = genNum;
   		bestLog = new ArrayList<Byte>();
   		worstLog = new ArrayList<Byte>();
   		avgLog = new ArrayList<Byte>();
-  		bestLog.add(generation.getBestFitness(FitnessMethod.ONES));
-  		worstLog.add(generation.getWorstFitness(FitnessMethod.ONES));
-  		avgLog.add(generation.getAvgFitness(FitnessMethod.ONES));
+		  diversityLog = new ArrayList<Integer>();
+  		bestLog.add(generation.getBestFitness(FITNESS_METHOD));
+  		worstLog.add(generation.getWorstFitness(FITNESS_METHOD));
+  		avgLog.add(generation.getAvgFitness(FITNESS_METHOD));
+      diversityNormilizer = 100.0 / generation.getAvgHammingDistance();
+      diversityLog.add((int) (generation.getAvgHammingDistance()*diversityNormilizer));
   		xInc = 0;
   		yInc = 0;
   		genCount = 0;
@@ -84,7 +89,7 @@ public class GenerationComponent extends JComponent {
   					this.getHeight() - BOTTOM_OFFSET - (this.getHeight() - BOTTOM_OFFSET - TOP_OFFSET) * i / 10 - 1, 
   					SIDE_OFFSET, 
   					this.getHeight() - BOTTOM_OFFSET - (this.getHeight() - BOTTOM_OFFSET - TOP_OFFSET) * i / 10 - 1);
-  			g2.drawString(genNum / 10 * i + "", 
+  			g2.drawString(TERMINATION_GENERATIONS / 10 * i + "", 
   					SIDE_OFFSET + (this.getWidth() - 2 * SIDE_OFFSET) * i / 10 - 5, 
   					this.getHeight() - BOTTOM_OFFSET + 20);
   			g2.drawLine(SIDE_OFFSET + (this.getWidth() - 2 * SIDE_OFFSET) * i / 10, 
@@ -121,11 +126,20 @@ public class GenerationComponent extends JComponent {
   		g2.drawString("Worst Fitness",
   				(int)(this.getWidth() - SIDE_OFFSET - (this.getWidth() - SIDE_OFFSET * 2) * LEGEND_X_OFFSET_RATIO + 20), 
   				(int)(this.getHeight() - BOTTOM_OFFSET - (this.getHeight() - TOP_OFFSET - BOTTOM_OFFSET) * LEGEND_Y_OFFSET_RATIO + 10 + 20 * 2));
-  		
+
+		g2.setColor(DIVERSITY_COLOR);
+		g2.fillRect((int)(this.getWidth() - SIDE_OFFSET - (this.getWidth() - SIDE_OFFSET * 2) * LEGEND_X_OFFSET_RATIO), 
+				(int)(this.getHeight() - BOTTOM_OFFSET - (this.getHeight() - TOP_OFFSET - BOTTOM_OFFSET) * LEGEND_Y_OFFSET_RATIO + 20 * 3),
+				LEGEND_SQUARE_SIZE, LEGEND_SQUARE_SIZE);
+		g2.setColor(Color.black);
+		g2.drawString("Diversity",
+				(int)(this.getWidth() - SIDE_OFFSET - (this.getWidth() - SIDE_OFFSET * 2) * LEGEND_X_OFFSET_RATIO + 20), 
+				(int)(this.getHeight() - BOTTOM_OFFSET - (this.getHeight() - TOP_OFFSET - BOTTOM_OFFSET) * LEGEND_Y_OFFSET_RATIO + 10 + 20 * 3));
+
   		
   		
   		g2.translate(SIDE_OFFSET, this.getHeight()-BOTTOM_OFFSET);
-  		xInc = ((double)this.getWidth() - SIDE_OFFSET * 2) / (genNum - 1);
+  		xInc = ((double)this.getWidth() - SIDE_OFFSET * 2) / (TERMINATION_GENERATIONS - 1);
   		yInc = ((double)this.getHeight() - TOP_OFFSET - BOTTOM_OFFSET) / 100;
   		
   		for(int i = 1; i <= genCount; i++) {
@@ -139,7 +153,12 @@ public class GenerationComponent extends JComponent {
   	  			
   	  		g2.setColor(WORST_COLOR);
   			g2.drawLine((int)(Math.round(xInc * (i - 1))), (int)(Math.round(-worstLog.get(i - 1) * yInc)), 
-  					(int)(Math.round(xInc * i)), (int)(Math.round(-worstLog.get(i) * yInc)));	
+  					(int)(Math.round(xInc * i)), (int)(Math.round(-worstLog.get(i) * yInc)));
+
+			// Draw diversity
+			g2.setColor(DIVERSITY_COLOR);
+			g2.drawLine((int)(Math.round(xInc * (i - 1))), (int)(Math.round(-diversityLog.get(i - 1) * yInc)),
+					(int)(Math.round(xInc * i)), (int)(Math.round(-diversityLog.get(i) * yInc)));
   		}
   		g2.translate(-SIDE_OFFSET, -this.getHeight() + BOTTOM_OFFSET);
   		
@@ -151,11 +170,12 @@ public class GenerationComponent extends JComponent {
   	}
   	
   	public void update() {
-  		if(genCount < genNum - 1) {
-  			generation.evolve(fitnessMethod, selectionMethod, mutationRate, 0);
-  			bestLog.add(generation.getBestFitness(fitnessMethod));
-	  		worstLog.add(generation.getWorstFitness(fitnessMethod));
-	  		avgLog.add(generation.getAvgFitness(fitnessMethod));
+  		if(genCount < TERMINATION_GENERATIONS - 1 && generation.getBestFitness(FITNESS_METHOD) < TERMINATION_FITNESS) {
+  			generation.evolve(FITNESS_METHOD, SelectionMethod.TOP_HALF, 0.001, 0);
+  			bestLog.add(generation.getBestFitness(FITNESS_METHOD));
+	  		worstLog.add(generation.getWorstFitness(FITNESS_METHOD));
+	  		avgLog.add(generation.getAvgFitness(FITNESS_METHOD));
+        diversityLog.add((int) (generation.getAvgHammingDistance()*diversityNormilizer));;
 	  		genCount++;
   		}
   	}
