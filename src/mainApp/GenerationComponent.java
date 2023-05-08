@@ -37,11 +37,18 @@ public class GenerationComponent extends JComponent {
 	private double xInc;
 	private double yInc;
 	private int genCount;
-  	
-  	public GenerationComponent() {
+	private double mutationRate;
+  	private FitnessMethod fitnessMethod;
+  	private SelectionMethod selectionMethod;
+	
+	public GenerationComponent() {
+		this((long)(Math.random() * Long.MAX_VALUE), 100, 100, 100, 0.001, FitnessMethod.ONES, SelectionMethod.TOP_HALF);
+	}
+	
+  	public GenerationComponent(long seed, int generationSize, int chromosomeSize, int genNum, double mutationRate, FitnessMethod fm, SelectionMethod sm) {
   		this.setPreferredSize(new Dimension(MainApp.GENERATION_FRAME_WIDTH, MainApp.GENERATION_FRAME_HEIGHT) );
-  		generation = new Generation(42, 100, 100);
-  		genNum = 200;
+  		generation = new Generation(seed, generationSize, chromosomeSize);
+  		this.genNum = genNum;
   		bestLog = new ArrayList<Byte>();
   		worstLog = new ArrayList<Byte>();
   		avgLog = new ArrayList<Byte>();
@@ -51,7 +58,15 @@ public class GenerationComponent extends JComponent {
   		xInc = 0;
   		yInc = 0;
   		genCount = 0;
+  		this.mutationRate = mutationRate;
+  		fitnessMethod = fm;
+  		selectionMethod = sm;
   	}
+  	
+  	public void setNumOfGen(int size) {genNum = size;}
+  	public void setMutationRate(double rate) {mutationRate = rate;}
+  	public void setFitnessMethod(FitnessMethod m) {fitnessMethod = m;}
+  	public void setSelectionMethod(SelectionMethod m) {selectionMethod = m;}
   	
   	
   	@Override
@@ -137,10 +152,10 @@ public class GenerationComponent extends JComponent {
   	
   	public void update() {
   		if(genCount < genNum - 1) {
-  			generation.evolve(FitnessMethod.ONES, SelectionMethod.TOP_HALF, 0.001, 0);
-  			bestLog.add(generation.getBestFitness(FitnessMethod.ONES));
-	  		worstLog.add(generation.getWorstFitness(FitnessMethod.ONES));
-	  		avgLog.add(generation.getAvgFitness(FitnessMethod.ONES));
+  			generation.evolve(fitnessMethod, selectionMethod, mutationRate, 0);
+  			bestLog.add(generation.getBestFitness(fitnessMethod));
+	  		worstLog.add(generation.getWorstFitness(fitnessMethod));
+	  		avgLog.add(generation.getAvgFitness(fitnessMethod));
 	  		genCount++;
   		}
   	}
