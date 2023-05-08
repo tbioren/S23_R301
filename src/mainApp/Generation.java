@@ -71,7 +71,7 @@ public class Generation {
                 bestChromosomes = selectRank(genSansElites);
                 break;
         }
-        //bestChromosomes = crossover(bestChromosomes); // Crossover the best chromosomes LEAVE COMMENTED FOR M2
+        bestChromosomes = crossover(bestChromosomes); // Crossover the best chromosomes LEAVE COMMENTED FOR M2
         ArrayList<SimpleChromosome> newGeneration = mutate(bestChromosomes, mutationRate);
 
         // Since you cant have half a chromosome, if the elitism number is odd, remove the first chromosome (the worst one)
@@ -226,5 +226,22 @@ public class Generation {
     		sum += chromo.getFitness();
     	}
     	return (byte)(sum / generation.length);
+    }
+
+    public int getAvgHammingDistance() {
+        int sum = 0;
+        for(int i=0; i < generation[0].getGenes().length; i++) {
+            int zero = 0, one = 0;
+            for(int j=0; j < generation[i].getGenes().length; j++) {
+                if(generation[i].getGenes()[j] == 0) {
+                    zero ++;
+                }
+                else {
+                    one ++;
+                }
+            }
+            sum += zero*one;
+        }
+        return sum / generation.length;
     }
 }
