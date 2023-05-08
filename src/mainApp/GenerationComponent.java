@@ -22,9 +22,10 @@ public class GenerationComponent extends JComponent {
   	private final Color BEST_COLOR = Color.green;
   	private final Color WORST_COLOR = Color.red;
   	private final Color AVERAGE_COLOR = Color.yellow;
+	private final Color DIVERSITY_COLOR = Color.BLUE;
 
 	private final int TERMINATION_GENERATIONS = 200;
-	private final int TERMINATION_FITNESS = 100;
+	private final int TERMINATION_FITNESS = 101;
 	private final FitnessMethod FITNESS_METHOD = FitnessMethod.ONES;
   	
   	
@@ -33,19 +34,24 @@ public class GenerationComponent extends JComponent {
   	private ArrayList<Byte> bestLog;
 	private ArrayList<Byte> worstLog;
 	private ArrayList<Byte> avgLog;
+	private ArrayList<Integer> diversityLog;
 	private double xInc;
 	private double yInc;
 	private int genCount;
+	private double diversityNormilizer;
   	
   	public GenerationComponent() {
   		this.setPreferredSize(new Dimension(MainApp.GENERATION_FRAME_WIDTH, MainApp.GENERATION_FRAME_HEIGHT) );
-  		generation = new Generation(42, 100, 100);;
+  		generation = new Generation(42, 100, 100);
   		bestLog = new ArrayList<Byte>();
   		worstLog = new ArrayList<Byte>();
   		avgLog = new ArrayList<Byte>();
+		diversityLog = new ArrayList<Integer>();
   		bestLog.add(generation.getBestFitness(FITNESS_METHOD));
   		worstLog.add(generation.getWorstFitness(FITNESS_METHOD));
   		avgLog.add(generation.getAvgFitness(FITNESS_METHOD));
+		diversityNormilizer = 100.0 / generation.getAvgHammingDistance();
+		diversityLog.add((int) (generation.getAvgHammingDistance()*diversityNormilizer));
   		xInc = 0;
   		yInc = 0;
   		genCount = 0;
@@ -104,7 +110,16 @@ public class GenerationComponent extends JComponent {
   		g2.drawString("Worst Fitness",
   				(int)(this.getWidth() - SIDE_OFFSET - (this.getWidth() - SIDE_OFFSET * 2) * LEGEND_X_OFFSET_RATIO + 20), 
   				(int)(this.getHeight() - BOTTOM_OFFSET - (this.getHeight() - TOP_OFFSET - BOTTOM_OFFSET) * LEGEND_Y_OFFSET_RATIO + 10 + 20 * 2));
-  		
+
+		g2.setColor(DIVERSITY_COLOR);
+		g2.fillRect((int)(this.getWidth() - SIDE_OFFSET - (this.getWidth() - SIDE_OFFSET * 2) * LEGEND_X_OFFSET_RATIO), 
+				(int)(this.getHeight() - BOTTOM_OFFSET - (this.getHeight() - TOP_OFFSET - BOTTOM_OFFSET) * LEGEND_Y_OFFSET_RATIO + 20 * 3),
+				LEGEND_SQUARE_SIZE, LEGEND_SQUARE_SIZE);
+		g2.setColor(Color.black);
+		g2.drawString("Diversity",
+				(int)(this.getWidth() - SIDE_OFFSET - (this.getWidth() - SIDE_OFFSET * 2) * LEGEND_X_OFFSET_RATIO + 20), 
+				(int)(this.getHeight() - BOTTOM_OFFSET - (this.getHeight() - TOP_OFFSET - BOTTOM_OFFSET) * LEGEND_Y_OFFSET_RATIO + 10 + 20 * 3));
+
   		
   		
   		g2.translate(SIDE_OFFSET, this.getHeight()-BOTTOM_OFFSET);
@@ -122,7 +137,12 @@ public class GenerationComponent extends JComponent {
   	  			
   	  		g2.setColor(WORST_COLOR);
   			g2.drawLine((int)(Math.round(xInc * (i - 1))), (int)(Math.round(-worstLog.get(i - 1) * yInc)), 
-  					(int)(Math.round(xInc * i)), (int)(Math.round(-worstLog.get(i) * yInc)));	
+  					(int)(Math.round(xInc * i)), (int)(Math.round(-worstLog.get(i) * yInc)));
+
+			// Draw diversity
+			g2.setColor(DIVERSITY_COLOR);
+			g2.drawLine((int)(Math.round(xInc * (i - 1))), (int)(Math.round(-diversityLog.get(i - 1) * yInc)),
+					(int)(Math.round(xInc * i)), (int)(Math.round(-diversityLog.get(i) * yInc)));
   		}
   		g2.translate(-SIDE_OFFSET, -this.getHeight() + BOTTOM_OFFSET);
   		
@@ -139,6 +159,7 @@ public class GenerationComponent extends JComponent {
   			bestLog.add(generation.getBestFitness(FITNESS_METHOD));
 	  		worstLog.add(generation.getWorstFitness(FITNESS_METHOD));
 	  		avgLog.add(generation.getAvgFitness(FITNESS_METHOD));
+			diversityLog.add((int) (generation.getAvgHammingDistance()*diversityNormilizer));;
 	  		genCount++;
   		}
   	}
