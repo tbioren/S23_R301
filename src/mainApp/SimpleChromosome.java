@@ -57,27 +57,27 @@ public class SimpleChromosome implements Comparable<SimpleChromosome>{
     }
 
     private void getFitnessOnes() {
-        int fitness = 0;
+        double fitness = 0;
         for (int i = 0; i < genes.length; i++) {
             if(genes[i] == 1) fitness++;
         }
-        this.fitness = fitness;
+        this.fitness = (int) (100*fitness/genes.length);
     }
 
     private void getFitnessCompareToChromosome() {
-        int fitness = 0;
+        double fitness = 0;
         for (int i = 0; i < genes.length; i++) {
             if(genes[i] == SMILEY_COMPARISON[i]) fitness++;
         }
-        this.fitness = fitness;
+        this.fitness = (int) (100*fitness/genes.length);
     }
 
     private void getFitnessSwitches() {
-        int fitness = 0;
+        double fitness = 0;
         for (int i = 0; i < genes.length - 1; i++) {
             if(genes[i] != genes[i + 1]) fitness++;
         }
-        this.fitness = fitness;
+        this.fitness = (int) (100*fitness/genes.length);;
     }
 
     public int getFitness() {

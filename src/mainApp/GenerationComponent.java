@@ -4,11 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.concurrent.TimeUnit;
 
 import javax.swing.JComponent;
 
@@ -26,10 +22,13 @@ public class GenerationComponent extends JComponent {
   	private final Color BEST_COLOR = Color.green;
   	private final Color WORST_COLOR = Color.red;
   	private final Color AVERAGE_COLOR = Color.yellow;
+
+	private final int TERMINATION_GENERATIONS = 200;
+	private final int TERMINATION_FITNESS = 100;
+	private final FitnessMethod FITNESS_METHOD = FitnessMethod.ONES;
   	
   	
   	private Generation generation;
-  	private int genNum;
   	
   	private ArrayList<Byte> bestLog;
 	private ArrayList<Byte> worstLog;
@@ -40,14 +39,13 @@ public class GenerationComponent extends JComponent {
   	
   	public GenerationComponent() {
   		this.setPreferredSize(new Dimension(MainApp.GENERATION_FRAME_WIDTH, MainApp.GENERATION_FRAME_HEIGHT) );
-  		generation = new Generation(42, 100, 100);
-  		genNum = 200;
+  		generation = new Generation(42, 100, 100);;
   		bestLog = new ArrayList<Byte>();
   		worstLog = new ArrayList<Byte>();
   		avgLog = new ArrayList<Byte>();
-  		bestLog.add(generation.getBestFitness(FitnessMethod.ONES));
-  		worstLog.add(generation.getWorstFitness(FitnessMethod.ONES));
-  		avgLog.add(generation.getAvgFitness(FitnessMethod.ONES));
+  		bestLog.add(generation.getBestFitness(FITNESS_METHOD));
+  		worstLog.add(generation.getWorstFitness(FITNESS_METHOD));
+  		avgLog.add(generation.getAvgFitness(FITNESS_METHOD));
   		xInc = 0;
   		yInc = 0;
   		genCount = 0;
@@ -69,7 +67,7 @@ public class GenerationComponent extends JComponent {
   					this.getHeight() - BOTTOM_OFFSET - (this.getHeight() - BOTTOM_OFFSET - TOP_OFFSET) * i / 10 - 1, 
   					SIDE_OFFSET, 
   					this.getHeight() - BOTTOM_OFFSET - (this.getHeight() - BOTTOM_OFFSET - TOP_OFFSET) * i / 10 - 1);
-  			g2.drawString(genNum / 10 * i + "", 
+  			g2.drawString(TERMINATION_GENERATIONS / 10 * i + "", 
   					SIDE_OFFSET + (this.getWidth() - 2 * SIDE_OFFSET) * i / 10 - 5, 
   					this.getHeight() - BOTTOM_OFFSET + 20);
   			g2.drawLine(SIDE_OFFSET + (this.getWidth() - 2 * SIDE_OFFSET) * i / 10, 
@@ -110,7 +108,7 @@ public class GenerationComponent extends JComponent {
   		
   		
   		g2.translate(SIDE_OFFSET, this.getHeight()-BOTTOM_OFFSET);
-  		xInc = ((double)this.getWidth() - SIDE_OFFSET * 2) / (genNum - 1);
+  		xInc = ((double)this.getWidth() - SIDE_OFFSET * 2) / (TERMINATION_GENERATIONS - 1);
   		yInc = ((double)this.getHeight() - TOP_OFFSET - BOTTOM_OFFSET) / 100;
   		
   		for(int i = 1; i <= genCount; i++) {
@@ -136,11 +134,11 @@ public class GenerationComponent extends JComponent {
   	}
   	
   	public void update() {
-  		if(genCount < genNum - 1) {
-  			generation.evolve(FitnessMethod.ONES, SelectionMethod.TOP_HALF, 0.001, 0);
-  			bestLog.add(generation.getBestFitness(FitnessMethod.ONES));
-	  		worstLog.add(generation.getWorstFitness(FitnessMethod.ONES));
-	  		avgLog.add(generation.getAvgFitness(FitnessMethod.ONES));
+  		if(genCount < TERMINATION_GENERATIONS - 1 && generation.getBestFitness(FITNESS_METHOD) < TERMINATION_FITNESS) {
+  			generation.evolve(FITNESS_METHOD, SelectionMethod.TOP_HALF, 0.001, 0);
+  			bestLog.add(generation.getBestFitness(FITNESS_METHOD));
+	  		worstLog.add(generation.getWorstFitness(FITNESS_METHOD));
+	  		avgLog.add(generation.getAvgFitness(FITNESS_METHOD));
 	  		genCount++;
   		}
   	}
