@@ -16,7 +16,7 @@ import javax.swing.*;
  * <br>Restrictions: None
  * 
  */
-public class MainApp {
+public class MainApp {// we need to refactor some of this code, we need a constructor.
 	private final String FRAME_TITLE = "Chromosome Thingiemabob";
 	private final String GENERATION_FRAME_TITLE = "Evolution Viewer";
     private final int FRAME_WIDTH = 600;
@@ -30,11 +30,14 @@ public class MainApp {
     private int generationNum;
     private int genomeLength;
     private double elitismPercent;
+    private String selectionString;
     
-    private String selectionMethod;
+    private SelectionMethod selectionMethod;
     private String[] selectionMethods = {"Truncation", "Roulette", "Rank"};
     private boolean crossover;
     private boolean isRunning = false;
+    private GenerationComponent generation = new GenerationComponent();
+    private JFrame generationFrame = new JFrame();
 	
 	/**
 	 * Manages the general structure of the app. Serves as the graphics viewer class that manages the 
@@ -55,10 +58,9 @@ public class MainApp {
 		frame.setTitle(chromosome.getFileName());
 		frame.setVisible(true);
 		
-		JFrame generationFrame = new JFrame();
+		
 		generationFrame.setTitle(GENERATION_FRAME_TITLE);
 		generationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		GenerationComponent generation = new GenerationComponent();
 		generationFrame.add(generation, BorderLayout.CENTER);
 		
 		//Generation Frame buttons & misc
@@ -113,63 +115,83 @@ public class MainApp {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (evolutionButton.getText() == "Start Evolution") {
-					evolutionButton.setText("Pause Evolution");
-					System.out.println("Starting evolution.");
-					isRunning = true;
-				} else {
-					evolutionButton.setText("Start Evolution");
-					System.out.println("Pausing evolution.");
-					isRunning = false;
-				}
+//				if(!generation.isTerminated()) {
+					if (evolutionButton.getText() == "Start Evolution") {
+						evolutionButton.setText("Pause Evolution");
+						System.out.println("Starting evolution.");
+						isRunning = true;
+						try {
+							mutationRate = Double.parseDouble(mutationTextField.getText());
+							System.out.println("successfully parsed");
+						} catch (NumberFormatException e1) {
+							mutationRate = 0.01;
+						}
+						
+						generation.setMutationRate(mutationRate);
+						
+						selectionString = selectionBox.getSelectedItem().toString();
+						
+						if (selectionString == "Roulette") {
+				  			selectionMethod = SelectionMethod.ROULETTE;
+				  		} else if (selectionString == "Rank") {
+				  			selectionMethod = SelectionMethod.RANK;
+				  		} else {
+				  			selectionMethod = SelectionMethod.TOP_HALF;
+				  		}
+						
+						generation.setSelectionMethod(selectionMethod);
+						// Crossover
+						
+						try {
+							populationSize = Integer.parseInt(populationTextField.getText());
+						} catch (NumberFormatException e1) {
+							populationSize = 100;
+						}
+						
+						
+						generation.setPopulationSize(populationSize);
+						
+						try {
+							generationNum = Integer.parseInt(generationTextField.getText());
+						} catch (NumberFormatException e1) {
+							generationNum = 106;
+						}
+						
+						generation.setNumOfGen(generationNum);
+						
+						try {
+							genomeLength = Integer.parseInt(genomeTextField.getText());
+						} catch (NumberFormatException e1) {
+							genomeLength = 100;
+						}
+						
+						generation.setGenomeLength(genomeLength);
+						
+						try {
+							elitismPercent = Double.parseDouble(elitismTextField.getText());
+						} catch (NumberFormatException e1) {
+							elitismPercent = 0;
+						}
+						
+						generation.setEliteNum(elitismPercent * populationSize);
+						
+						
+						generation.setCrossover(crossover);
+					} else {
+						evolutionButton.setText("Start Evolution");
+						System.out.println("Pausing evolution.");
+						isRunning = false;
+					}
+//				} else {
+//					evolutionButton.setText("Restart Evolution");
+//					isRunning = false;
+//					restartGeneration();
+//					
+//				}
 				
 			}
 			
 		});
-		
-		try {
-			mutationRate = Double.parseDouble(mutationTextField.getText());
-		} catch (NumberFormatException e) {
-			mutationRate = 0.01;
-		}
-		
-		generation.setMutationRate(mutationRate);
-		
-		generation.setSelectionMethod(selectionBox.getSelectedItem().toString());
-		
-		// Crossover
-		
-		try {
-			populationSize = Integer.parseInt(populationTextField.getText());
-		} catch (NumberFormatException e) {
-			populationSize = 100;
-		}
-		
-		generation.setPopulationSize(populationSize);
-		
-		try {
-			generationNum = Integer.parseInt(generationTextField.getText());
-		} catch (NumberFormatException e) {
-			generationNum = 106;
-		}
-		
-		generation.setNumOfGen(generationNum);
-		
-		try {
-			genomeLength = Integer.parseInt(genomeTextField.getText());
-		} catch (NumberFormatException e) {
-			genomeLength = 100;
-		}
-		
-		generation.setGenomeLength(genomeLength);
-		
-		try {
-			elitismPercent = Integer.parseInt(elitismTextField.getText());
-		} catch (NumberFormatException e) {
-			elitismPercent = 0;
-		}
-		
-		generation.setElitismPercent(elitismPercent);
 		
 		crossoverCheck.addItemListener(new ItemListener(){
 
@@ -187,7 +209,7 @@ public class MainApp {
 				
 		}); 
 		
-		generation.setCrossover(crossover);
+		
 		
 		
 		
@@ -287,6 +309,13 @@ public class MainApp {
 		generationFrame.setSize(GENERATION_FRAME_WIDTH, GENERATION_FRAME_HEIGHT);
 	} // runApp
 
+	public void restartGeneration() {
+		generation = new GenerationComponent(populationSize, genomeLength, generationNum, mutationRate, selectionMethod, elitismPercent);
+		generation.repaint();
+		generationFrame.repaint();
+	}
+	
+	
 	/**
 	 * ensures: runs the application
 	 * @param args unused

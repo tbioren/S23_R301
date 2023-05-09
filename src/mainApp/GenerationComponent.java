@@ -24,7 +24,7 @@ public class GenerationComponent extends JComponent {
   	private final Color AVERAGE_COLOR = Color.yellow;
 	private final Color DIVERSITY_COLOR = Color.BLUE;
 
-	private final int TERMINATION_FITNESS = 101;
+	private final int TERMINATION_FITNESS = 100;
 	private final FitnessMethod FITNESS_METHOD = FitnessMethod.ONES;
   	
   	
@@ -43,21 +43,26 @@ public class GenerationComponent extends JComponent {
   	private SelectionMethod selectionMethod;
   	private int genomeLength;
   	private int populationSize;
-  	private double elitismPercent;
+  	private double eliteNum;
   	private boolean crossover;
+  	private boolean terminated;
 	
 	public GenerationComponent() {
-		this((long)(Math.random() * Long.MAX_VALUE), 100, 100, 200, 0.001, FitnessMethod.ONES, SelectionMethod.TOP_HALF);
+		this(100, 100, 200, 0.001, SelectionMethod.TOP_HALF, 0.0);
 	}
 	
-  public GenerationComponent(long seed, int generationSize, int chromosomeSize, int maxGens, double mutationRate, FitnessMethod fm, SelectionMethod sm) {
+	public GenerationComponent(int generationSize, int chromosomeSize, int maxGens, double mutationRate, SelectionMethod sm, double elitismPercent) {
+		this((long)(Math.random() * Long.MAX_VALUE), generationSize, chromosomeSize, maxGens, mutationRate, sm, elitismPercent);
+	}
+	
+	public GenerationComponent(long seed, int generationSize, int chromosomeSize, int maxGens, double mutationRate, SelectionMethod sm, double elitismPercent) {
   		this.setPreferredSize(new Dimension(MainApp.GENERATION_FRAME_WIDTH, MainApp.GENERATION_FRAME_HEIGHT) );
   		generation = new Generation(seed, generationSize, chromosomeSize);
   		this.maxGens = maxGens;
   		bestLog = new ArrayList<Byte>();
   		worstLog = new ArrayList<Byte>();
   		avgLog = new ArrayList<Byte>();
-		  diversityLog = new ArrayList<Integer>();
+		diversityLog = new ArrayList<Integer>();
   		bestLog.add(generation.getBestFitness(FITNESS_METHOD));
   		worstLog.add(generation.getWorstFitness(FITNESS_METHOD));
   		avgLog.add(generation.getAvgFitness(FITNESS_METHOD));
@@ -67,25 +72,21 @@ public class GenerationComponent extends JComponent {
   		yInc = 0;
   		genCount = 0;
   		this.mutationRate = mutationRate;
-  		fitnessMethod = fm;
   		selectionMethod = sm;
+  		crossover = false;
+  		eliteNum = generationSize * elitismPercent;
+  		terminated = false;
+  		populationSize = generationSize;
+  		genomeLength = chromosomeSize;
   	}
   	
   	public void setNumOfGen(int size) {maxGens = size;}
   	public void setMutationRate(double rate) {mutationRate = rate;}
   	public void setFitnessMethod(FitnessMethod m) {fitnessMethod = m;}
-  	public void setSelectionMethod(String m) {
-  		if (m == "Roulette") {
-  			selectionMethod = SelectionMethod.ROULETTE;
-  		} else if (m == "Rank") {
-  			selectionMethod = SelectionMethod.RANK;
-  		} else {
-  			selectionMethod = SelectionMethod.TOP_HALF;
-  		}
-  	}
+  	public void setSelectionMethod(SelectionMethod m) {selectionMethod = m;}
   	public void setGenomeLength(int g) {genomeLength = g;}
   	public void setPopulationSize(int p) {populationSize = p;}
-  	public void setElitismPercent(double e) {elitismPercent = e;}
+  	public void setEliteNum(double e) {eliteNum = e;}
   	public void setCrossover(boolean tf) {crossover = tf;}
   	
   	@Override
@@ -185,12 +186,22 @@ public class GenerationComponent extends JComponent {
   	
   	public void update() {
   		if(genCount < maxGens - 1 && generation.getBestFitness(FITNESS_METHOD) < TERMINATION_FITNESS) {
-  			generation.evolve(FITNESS_METHOD, SelectionMethod.TOP_HALF, 0.001, 0);
+  			generation.evolve(FITNESS_METHOD, selectionMethod, mutationRate, eliteNum, crossover);
   			bestLog.add(generation.getBestFitness(FITNESS_METHOD));
 	  		worstLog.add(generation.getWorstFitness(FITNESS_METHOD));
 	  		avgLog.add(generation.getAvgFitness(FITNESS_METHOD));
-        diversityLog.add((int) (generation.getAvgHammingDistance()*diversityNormilizer));;
+	  		diversityLog.add((int) (generation.getAvgHammingDistance()*diversityNormilizer));;
 	  		genCount++;
+	  		System.out.println("Mutation rate: " + mutationRate + " selection: " + selectionMethod + " crossover: " + crossover +
+	  				" population size: " + populationSize + " generations: " + maxGens + " Genome length: " + genomeLength + " Elitism: " + eliteNum);
+  		} else {
+  			terminated = true;
   		}
   	}
+  	
+  	public boolean isTerminated() {
+  		return terminated;
+  	}
+  	
+  	
 }

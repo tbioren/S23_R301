@@ -29,28 +29,11 @@ public class Generation {
         this(100, 100);
     }
 
-    /**
-     * Creates a new generation of chromosomes with random genes
-     * @param fitnessMethod 
-     * @param selectionMethod
-     * @param mutationRate
-     * @param elitismNumber
-     * @param maxGenerations
-     */
-    public void evolveLoop(FitnessMethod fitnessMethod, SelectionMethod selectionMethod, double mutationRate, double elitismNumber, int maxGenerations) {
-        for(int i=0; i < maxGenerations; i++) {
-            evolve(fitnessMethod, selectionMethod, mutationRate, elitismNumber);
-        }
-        for(SimpleChromosome chromosome : generation) {
-            chromosome.setFitness(fitnessMethod);
-        }
-        System.out.println();
-    }
 
     /**
      * Creates a new generation of chromosomes with random genes
      */
-    public void evolve(FitnessMethod fitnessMethod, SelectionMethod selectionMethod, double mutationRate, double elitismNumber) {
+    public void evolve(FitnessMethod fitnessMethod, SelectionMethod selectionMethod, double mutationRate, double elitismNumber, boolean crossover) {
         sortGeneration(fitnessMethod);
         // Separate the elite chromosomes from the rest of the generation
         ArrayList<SimpleChromosome> eliteChromosomes = getElites(elitismNumber);
@@ -71,7 +54,7 @@ public class Generation {
                 bestChromosomes = selectRank(genSansElites);
                 break;
         }
-        bestChromosomes = crossover(bestChromosomes); // Crossover the best chromosomes LEAVE COMMENTED FOR M2
+        if(crossover) bestChromosomes = crossover(bestChromosomes); // Crossover the best chromosomes LEAVE COMMENTED FOR M2
         ArrayList<SimpleChromosome> newGeneration = mutate(bestChromosomes, mutationRate);
 
         // Since you cant have half a chromosome, if the elitism number is odd, remove the first chromosome (the worst one)
