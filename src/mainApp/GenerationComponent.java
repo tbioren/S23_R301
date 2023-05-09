@@ -12,7 +12,7 @@ import javax.swing.JComponent;
 public class GenerationComponent extends JComponent {
 	
   	private final int SIDE_OFFSET = 30;
-  	private final int TOP_OFFSET = 40;
+  	private final int TOP_OFFSET = 10;
   	private final int BOTTOM_OFFSET = 30;
   	
   	private final double LEGEND_X_OFFSET_RATIO = 0.2;
@@ -29,7 +29,6 @@ public class GenerationComponent extends JComponent {
   	
   	
   	private Generation generation;
-  	
   	private ArrayList<Byte> bestLog;
 	private ArrayList<Byte> worstLog;
 	private ArrayList<Byte> avgLog;
@@ -40,8 +39,12 @@ public class GenerationComponent extends JComponent {
 	private int genCount;
 	private double diversityNormilizer;
 	private double mutationRate;
-	private FitnessMethod fitnessMethod;
-	private SelectionMethod selectionMethod;
+  	private FitnessMethod fitnessMethod;
+  	private SelectionMethod selectionMethod;
+  	private int genomeLength;
+  	private int populationSize;
+  	private double elitismPercent;
+  	private boolean crossover;
 	
 	public GenerationComponent() {
 		this((long)(Math.random() * Long.MAX_VALUE), 100, 100, 200, 0.001, FitnessMethod.ONES, SelectionMethod.TOP_HALF);
@@ -71,8 +74,19 @@ public class GenerationComponent extends JComponent {
   	public void setNumOfGen(int size) {maxGens = size;}
   	public void setMutationRate(double rate) {mutationRate = rate;}
   	public void setFitnessMethod(FitnessMethod m) {fitnessMethod = m;}
-  	public void setSelectionMethod(SelectionMethod m) {selectionMethod = m;}
-  	
+  	public void setSelectionMethod(String m) {
+  		if (m == "Roulette") {
+  			selectionMethod = SelectionMethod.ROULETTE;
+  		} else if (m == "Rank") {
+  			selectionMethod = SelectionMethod.RANK;
+  		} else {
+  			selectionMethod = SelectionMethod.TOP_HALF;
+  		}
+  	}
+  	public void setGenomeLength(int g) {genomeLength = g;}
+  	public void setPopulationSize(int p) {populationSize = p;}
+  	public void setElitismPercent(double e) {elitismPercent = e;}
+  	public void setCrossover(boolean tf) {crossover = tf;}
   	
   	@Override
   	protected void paintComponent(Graphics g) {
