@@ -154,7 +154,7 @@ public class MainApp {// we need to refactor some of this code, we need a constr
 						try {
 							generationNum = Integer.parseInt(generationTextField.getText());
 						} catch (NumberFormatException e1) {
-							generationNum = 106;
+							generationNum = 100;
 						}
 						
 						generation.setNumOfGen(generationNum);

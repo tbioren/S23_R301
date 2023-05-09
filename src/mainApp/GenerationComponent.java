@@ -48,7 +48,7 @@ public class GenerationComponent extends JComponent {
   	private boolean terminated;
 	
 	public GenerationComponent() {
-		this(100, 100, 200, 0.001, SelectionMethod.TOP_HALF, 0.0);
+		this(100, 100, 100, 0.01, SelectionMethod.TOP_HALF, 0.0);
 	}
 	
 	public GenerationComponent(int generationSize, int chromosomeSize, int maxGens, double mutationRate, SelectionMethod sm, double elitismPercent) {
