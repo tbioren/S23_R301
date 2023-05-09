@@ -3,6 +3,9 @@
 
 import random
 
-with open("test.csv", "w") as file:
+FILE_LOCATION = "test.csv"
+
+with open(FILE_LOCATION, "w") as file:
     for i in range(100):
         file.write(str(random.randint(0, 1)) + ",")
+    print("Generated file " + FILE_LOCATION)

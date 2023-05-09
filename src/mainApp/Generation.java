@@ -54,7 +54,7 @@ public class Generation {
                 bestChromosomes = selectRank(genSansElites);
                 break;
         }
-        if(crossover) bestChromosomes = crossover(bestChromosomes); // Crossover the best chromosomes LEAVE COMMENTED FOR M2
+        //if(crossover) bestChromosomes = crossover(bestChromosomes); // Crossover the best chromosomes LEAVE COMMENTED FOR M2
         ArrayList<SimpleChromosome> newGeneration = mutate(bestChromosomes, mutationRate);
 
         // Since you cant have half a chromosome, if the elitism number is odd, remove the first chromosome (the worst one)
