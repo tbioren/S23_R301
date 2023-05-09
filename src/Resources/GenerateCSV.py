@@ -3,7 +3,6 @@
 
 import random
 
-if __name__ == "__main__":
-    with open("test.csv", "w") as file:
-        for i in range(100):
-            file.write(str(random.randint(0, 1)) + ",")
+with open("test.csv", "w") as file:
+    for i in range(100):
+        file.write(str(random.randint(0, 1)) + ",")
