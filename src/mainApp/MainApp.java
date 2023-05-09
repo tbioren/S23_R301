@@ -3,6 +3,8 @@ package mainApp;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.*;
@@ -23,6 +25,16 @@ public class MainApp {
     public static final int GENERATION_FRAME_WIDTH = 1200;
     public static final int GENERATION_FRAME_HEIGHT = 600;
     
+    private double mutationRate;
+    private int populationSize;
+    private int generationNum;
+    private int genomeLength;
+    private double elitismPercent;
+    
+    private String selectionMethod;
+    private String[] selectionMethods = {"Truncation", "Roulette", "Rank"};
+    private boolean crossover;
+    private boolean isRunning = false;
 	
 	/**
 	 * Manages the general structure of the app. Serves as the graphics viewer class that manages the 
@@ -51,7 +63,7 @@ public class MainApp {
 		
 		//Generation Frame buttons & misc
 		JPanel labelPanel = new JPanel();
-		frame.add(labelPanel, BorderLayout.NORTH);
+		generationFrame.add(labelPanel, BorderLayout.NORTH);
 		
 		JLabel generationViewerLabel = new JLabel("Generation Viewer");
 		labelPanel.add(generationViewerLabel);
@@ -64,11 +76,11 @@ public class MainApp {
 		interactionPanel.add(mutationTextLabel);
 		interactionPanel.add(mutationTextField);
 		
-		String[] selectionMethod = {"Truncation", "Roulette", "Rank"};
 		JLabel selectionTextLabel = new JLabel("Selection ");
-		JComboBox selectionBox = new JComboBox(selectionMethod);
+		JComboBox selectionBox = new JComboBox(selectionMethods);
 		interactionPanel.add(selectionTextLabel);
 		interactionPanel.add(selectionBox);
+		selectionBox.setEnabled(true);
 		
 		JLabel crossoverYN = new JLabel("Crossover Y/N?");
 		JCheckBox crossoverCheck = new JCheckBox();
@@ -97,6 +109,85 @@ public class MainApp {
 		
 		JButton evolutionButton = new JButton("Start Evolution");
 		interactionPanel.add(evolutionButton);
+		evolutionButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (evolutionButton.getText() == "Start Evolution") {
+					evolutionButton.setText("Pause Evolution");
+					System.out.println("Starting evolution.");
+					isRunning = true;
+				} else {
+					evolutionButton.setText("Start Evolution");
+					System.out.println("Pausing evolution.");
+					isRunning = false;
+				}
+				
+			}
+			
+		});
+		
+		try {
+			mutationRate = Double.parseDouble(mutationTextField.getText());
+		} catch (NumberFormatException e) {
+			mutationRate = 0.01;
+		}
+		
+		generation.setMutationRate(mutationRate);
+		
+		generation.setSelectionMethod(selectionBox.getSelectedItem().toString());
+		
+		// Crossover
+		
+		try {
+			populationSize = Integer.parseInt(populationTextField.getText());
+		} catch (NumberFormatException e) {
+			populationSize = 100;
+		}
+		
+		generation.setPopulationSize(populationSize);
+		
+		try {
+			generationNum = Integer.parseInt(generationTextField.getText());
+		} catch (NumberFormatException e) {
+			generationNum = 106;
+		}
+		
+		generation.setNumOfGen(generationNum);
+		
+		try {
+			genomeLength = Integer.parseInt(genomeTextField.getText());
+		} catch (NumberFormatException e) {
+			genomeLength = 100;
+		}
+		
+		generation.setGenomeLength(genomeLength);
+		
+		try {
+			elitismPercent = Integer.parseInt(elitismTextField.getText());
+		} catch (NumberFormatException e) {
+			elitismPercent = 0;
+		}
+		
+		generation.setElitismPercent(elitismPercent);
+		
+		crossoverCheck.addItemListener(new ItemListener(){
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == 1) {
+					System.out.println("Checkbox Selected");
+					crossover = true;
+				} else {
+					System.out.println("Checkbox Deselected");
+					crossover = false;
+				}
+				
+			}
+				
+		}); 
+		
+		generation.setCrossover(crossover);
 		
 		
 		
@@ -180,11 +271,11 @@ public class MainApp {
 		Timer t = new Timer(DELAY, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
-				generation.update();
-				generation.repaint();
-				
-				generationFrame.repaint();
+				if(isRunning) {
+					generation.update();
+					generation.repaint();
+					generationFrame.repaint();
+				}
 				
 			}
 		});

@@ -16,7 +16,7 @@ import javax.swing.JComponent;
 public class GenerationComponent extends JComponent {
 	
   	private final int SIDE_OFFSET = 30;
-  	private final int TOP_OFFSET = 40;
+  	private final int TOP_OFFSET = 10;
   	private final int BOTTOM_OFFSET = 30;
   	
   	private final double LEGEND_X_OFFSET_RATIO = 0.2;
@@ -29,7 +29,7 @@ public class GenerationComponent extends JComponent {
   	
   	
   	private Generation generation;
-  	private int genNum;
+  	private int maxGen;
   	
   	private ArrayList<Byte> bestLog;
 	private ArrayList<Byte> worstLog;
@@ -40,15 +40,19 @@ public class GenerationComponent extends JComponent {
 	private double mutationRate;
   	private FitnessMethod fitnessMethod;
   	private SelectionMethod selectionMethod;
+  	private int genomeLength;
+  	private int populationSize;
+  	private double elitismPercent;
+  	private boolean crossover;
 	
 	public GenerationComponent() {
 		this((long)(Math.random() * Long.MAX_VALUE), 100, 100, 100, 0.001, FitnessMethod.ONES, SelectionMethod.TOP_HALF);
 	}
 	
-  	public GenerationComponent(long seed, int generationSize, int chromosomeSize, int genNum, double mutationRate, FitnessMethod fm, SelectionMethod sm) {
+  	public GenerationComponent(long seed, int generationSize, int chromosomeSize, int maxGen, double mutationRate, FitnessMethod fm, SelectionMethod sm) {
   		this.setPreferredSize(new Dimension(MainApp.GENERATION_FRAME_WIDTH, MainApp.GENERATION_FRAME_HEIGHT) );
   		generation = new Generation(seed, generationSize, chromosomeSize);
-  		this.genNum = genNum;
+  		this.maxGen = maxGen;
   		bestLog = new ArrayList<Byte>();
   		worstLog = new ArrayList<Byte>();
   		avgLog = new ArrayList<Byte>();
@@ -63,11 +67,22 @@ public class GenerationComponent extends JComponent {
   		selectionMethod = sm;
   	}
   	
-  	public void setNumOfGen(int size) {genNum = size;}
+  	public void setNumOfGen(int size) {maxGen = size;}
   	public void setMutationRate(double rate) {mutationRate = rate;}
   	public void setFitnessMethod(FitnessMethod m) {fitnessMethod = m;}
-  	public void setSelectionMethod(SelectionMethod m) {selectionMethod = m;}
-  	
+  	public void setSelectionMethod(String m) {
+  		if (m == "Roulette") {
+  			selectionMethod = SelectionMethod.ROULETTE;
+  		} else if (m == "Rank") {
+  			selectionMethod = SelectionMethod.RANK;
+  		} else {
+  			selectionMethod = SelectionMethod.TOP_HALF;
+  		}
+  	}
+  	public void setGenomeLength(int g) {genomeLength = g;}
+  	public void setPopulationSize(int p) {populationSize = p;}
+  	public void setElitismPercent(double e) {elitismPercent = e;}
+  	public void setCrossover(boolean tf) {crossover = tf;}
   	
   	@Override
   	protected void paintComponent(Graphics g) {
@@ -84,7 +99,7 @@ public class GenerationComponent extends JComponent {
   					this.getHeight() - BOTTOM_OFFSET - (this.getHeight() - BOTTOM_OFFSET - TOP_OFFSET) * i / 10 - 1, 
   					SIDE_OFFSET, 
   					this.getHeight() - BOTTOM_OFFSET - (this.getHeight() - BOTTOM_OFFSET - TOP_OFFSET) * i / 10 - 1);
-  			g2.drawString(genNum / 10 * i + "", 
+  			g2.drawString(maxGen / 10 * i + "", 
   					SIDE_OFFSET + (this.getWidth() - 2 * SIDE_OFFSET) * i / 10 - 5, 
   					this.getHeight() - BOTTOM_OFFSET + 20);
   			g2.drawLine(SIDE_OFFSET + (this.getWidth() - 2 * SIDE_OFFSET) * i / 10, 
@@ -125,7 +140,7 @@ public class GenerationComponent extends JComponent {
   		
   		
   		g2.translate(SIDE_OFFSET, this.getHeight()-BOTTOM_OFFSET);
-  		xInc = ((double)this.getWidth() - SIDE_OFFSET * 2) / (genNum - 1);
+  		xInc = ((double)this.getWidth() - SIDE_OFFSET * 2) / (maxGen - 1);
   		yInc = ((double)this.getHeight() - TOP_OFFSET - BOTTOM_OFFSET) / 100;
   		
   		for(int i = 1; i <= genCount; i++) {
@@ -151,7 +166,7 @@ public class GenerationComponent extends JComponent {
   	}
   	
   	public void update() {
-  		if(genCount < genNum - 1) {
+  		if(genCount < maxGen - 1) {
   			generation.evolve(fitnessMethod, selectionMethod, mutationRate, 0);
   			bestLog.add(generation.getBestFitness(fitnessMethod));
 	  		worstLog.add(generation.getWorstFitness(fitnessMethod));
