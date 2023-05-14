@@ -1,5 +1,7 @@
 package mainApp;
 
+import java.util.Arrays;
+
 public class SimpleChromosome implements Comparable<SimpleChromosome>{
     protected byte[] genes;
     private int fitness;
@@ -12,7 +14,7 @@ public class SimpleChromosome implements Comparable<SimpleChromosome>{
     }
 
     public SimpleChromosome(byte[] genes) {
-        this.genes = genes;
+        this.genes = Arrays.copyOf(genes, genes.length);
     }
 
     public byte[] getGenes() {

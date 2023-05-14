@@ -46,7 +46,7 @@ public class Generation {
     public void evolve(FitnessMethod fitnessMethod, SelectionMethod selectionMethod, double mutationRate, double elitismNumber, boolean crossover) {
         sortGeneration(fitnessMethod);
         
-        bestChromo = new Chromosome(generation[generation.length - 1]);
+        
         
         // Separate the elite chromosomes from the rest of the generation
         ArrayList<SimpleChromosome> eliteChromosomes = getElites(elitismNumber);
@@ -67,7 +67,7 @@ public class Generation {
                 bestChromosomes = selectRank(genSansElites);
                 break;
         }
-        //if(crossover) bestChromosomes = crossover(bestChromosomes); // Crossover the best chromosomes LEAVE COMMENTED FOR M2
+        if(crossover) bestChromosomes = crossover(bestChromosomes); // Crossover the best chromosomes LEAVE COMMENTED FOR M2
         ArrayList<SimpleChromosome> newGeneration = mutate(bestChromosomes, mutationRate);
 
         // Since you cant have half a chromosome, if the elitism number is odd, remove the first chromosome (the worst one)
@@ -83,6 +83,7 @@ public class Generation {
         //printAverageFitness(fitnessMethod);
         // Don't remove the comment on the next line
         //System.out.prntln();
+        bestChromo = new Chromosome(generation[generation.length - 1]);
     }
 
     public void printAverageFitness(FitnessMethod fitnessMethod) {
@@ -92,6 +93,10 @@ public class Generation {
             totalFitness += chromosome.getFitness();
         }
         System.out.println("Average fitness: " + totalFitness/generation.length);
+    }
+
+    public void printBestFitness(FitnessMethod fitnessMethod) {
+        System.out.println("Best fitness: " + getBestFitness(fitnessMethod));
     }
 
     // Creates 2 mutant children from each parent

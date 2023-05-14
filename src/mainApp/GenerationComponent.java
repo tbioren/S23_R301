@@ -193,8 +193,9 @@ public class GenerationComponent extends JComponent {
 	  		avgLog.add(generation.getAvgFitness(FITNESS_METHOD));
 	  		diversityLog.add((int) (generation.getAvgHammingDistance()*diversityNormilizer));;
 	  		genCount++;
-	  		System.out.println("Mutation rate: " + mutationRate + " selection: " + selectionMethod + " crossover: " + crossover +
-	  				" population size: " + populationSize + " generations: " + maxGens + " Genome length: " + genomeLength + " Elitism: " + eliteNum);
+			generation.printBestFitness(FITNESS_METHOD);
+	  		// System.out.println("Mutation rate: " + mutationRate + " selection: " + selectionMethod + " crossover: " + crossover +
+	  				// " population size: " + populationSize + " generations: " + maxGens + " Genome length: " + genomeLength + " Elitism: " + eliteNum);
   		} else {
   			terminated = true;
   		}
