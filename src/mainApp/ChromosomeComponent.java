@@ -28,6 +28,25 @@ public class ChromosomeComponent extends JComponent{
 			public void mouseExited(MouseEvent e) {}
 		});
     }
+    
+    public ChromosomeComponent(Chromosome chromo) {
+    	this.chromo = chromo;
+    	mutationRate = 0.0;
+        addMouseListener(new MouseListener() {
+			public void mouseClicked(MouseEvent e) {
+				chromo.handleClick(e.getPoint());
+                repaint();
+			}
+			public void mousePressed(MouseEvent e) {}
+			public void mouseReleased(MouseEvent e) {}
+			public void mouseEntered(MouseEvent e) {}
+			public void mouseExited(MouseEvent e) {}
+		});
+    }
+    
+    public void setChromo(Chromosome chromo) {
+    	this.chromo = chromo;
+    }
 
     /**
      * Paints the current chromosome

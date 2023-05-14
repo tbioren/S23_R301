@@ -88,6 +88,7 @@ public class GenerationComponent extends JComponent {
   	public void setPopulationSize(int p) {populationSize = p;}
   	public void setEliteNum(double e) {eliteNum = e;}
   	public void setCrossover(boolean tf) {crossover = tf;}
+  	public Chromosome getBestChromo() {return generation.getBestChromo();}
   	
   	@Override
   	protected void paintComponent(Graphics g) {
@@ -202,6 +203,10 @@ public class GenerationComponent extends JComponent {
   	public boolean isTerminated() {
   		return terminated;
   	}
+  	
+  	public SimpleChromosome[] getGeneration() {
+    	return generation.getGeneration();
+    }
   	
   	
 }

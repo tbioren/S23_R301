@@ -48,6 +48,14 @@ public class MainApp {// we need to refactor some of this code, we need a constr
 	 * @throws IncorrectFileSizeException
 	 */
 	private void runApp() throws IOException, IncorrectFileSizeException {
+		// Set up JFrame and PopulationComponent
+		JFrame pFrame = new JFrame();
+		pFrame.setTitle("Population Viewer");
+		pFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		PopulationComponent population = new PopulationComponent(generation.getGeneration());
+		pFrame.add(population, BorderLayout.CENTER);
+		pFrame.setVisible(true);
+		
 		
 		//Set up JFrame and ChromosomeComponent
 		JFrame frame = new JFrame();
@@ -290,13 +298,20 @@ public class MainApp {// we need to refactor some of this code, we need a constr
 		frame.pack();
 		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		
+		pFrame.pack();
+		pFrame.setSize(590, 590);
+		
 		Timer t = new Timer(DELAY, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if(isRunning) {
 					generation.update();
+					chromosome.setChromo(generation.getBestChromo());
 					generation.repaint();
 					generationFrame.repaint();
+					chromosome.repaint();
+					frame.repaint();
+					
 				}
 				
 			}
