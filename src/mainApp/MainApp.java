@@ -299,7 +299,7 @@ public class MainApp {// we need to refactor some of this code, we need a constr
 		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		
 		pFrame.pack();
-		pFrame.setSize(590, 590);
+		pFrame.setSize(650, 650);
 		
 		Timer t = new Timer(DELAY, new ActionListener() {
 			@Override
@@ -311,6 +311,9 @@ public class MainApp {// we need to refactor some of this code, we need a constr
 					generationFrame.repaint();
 					chromosome.repaint();
 					frame.repaint();
+					population.setGeneration(generation.getGeneration());
+					population.repaint();
+					pFrame.repaint();
 					
 				}
 				
