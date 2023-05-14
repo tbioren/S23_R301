@@ -114,6 +114,7 @@ public class Generation {
 
     // Crossover. It's complicated so look at the technical documentation if you're big enough of a nerd to care
     private ArrayList<SimpleChromosome> crossover(ArrayList<SimpleChromosome> bestChromosomes) {
+        System.out.println("Crossover");
         ArrayList<SimpleChromosome> newGeneration = new ArrayList<SimpleChromosome>();
         for(int i=0; i < bestChromosomes.size(); i+=2) {
             byte[] parent1Start = Arrays.copyOfRange(bestChromosomes.get(i).getGenes(), 0, CROSSOVER_POINT);
@@ -166,6 +167,7 @@ public class Generation {
     }
 
     // Selects the chromosomes from the generation with the given selection method (I'm not sure if this works)
+    // TODO: Fix this
     private ArrayList<SimpleChromosome> selectRoulette(ArrayList<SimpleChromosome> newGen) {
         ArrayList<Integer> roulette = new ArrayList<>();
         for (int i = 0; i < newGen.size(); i++) {
@@ -174,7 +176,7 @@ public class Generation {
             }
         }
         ArrayList<SimpleChromosome> newGeneration = new ArrayList<SimpleChromosome>();
-        for(int i=0; i < newGen.size()/2+1; i++) {
+        for(int i=0; i < (newGen.size()+1)/2; i++) {
             int index = roulette.get((int) (Math.random() * roulette.size()));
             byte[] genes = Arrays.copyOf(newGen.get(index).getGenes(), newGen.get(index).getGenes().length);
             newGeneration.add(new SimpleChromosome(genes));
@@ -183,6 +185,7 @@ public class Generation {
     }
 
     // Selects the chromosomes from the generation with the given selection method (I'm not sure if this works)
+    // TODO: Fix this
     private ArrayList<SimpleChromosome> selectRank(ArrayList<SimpleChromosome> newGen) {
         for(int i=0; i < newGen.size(); i++) {
             newGen.get(i).setFitness(i+1);
