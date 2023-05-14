@@ -13,6 +13,7 @@ public class Generation {
     private int chromosomeSize;
     private long seed;
     private final int CROSSOVER_POINT = 50;
+    private Chromosome bestChromo;
 
     public Generation(long seed, int size, int chromosomeSize) {
         this.seed = seed;
@@ -28,6 +29,15 @@ public class Generation {
     public Generation() {
         this(100, 100);
     }
+    
+    public Chromosome getBestChromo() {
+    	return bestChromo;
+    }
+    
+    public SimpleChromosome[] getGeneration() {
+    	return generation;
+    }
+    
 
 
     /**
@@ -35,6 +45,9 @@ public class Generation {
      */
     public void evolve(FitnessMethod fitnessMethod, SelectionMethod selectionMethod, double mutationRate, double elitismNumber, boolean crossover) {
         sortGeneration(fitnessMethod);
+        
+        bestChromo = new Chromosome(generation[generation.length - 1]);
+        
         // Separate the elite chromosomes from the rest of the generation
         ArrayList<SimpleChromosome> eliteChromosomes = getElites(elitismNumber);
         ArrayList<SimpleChromosome> genSansElites = trimElites(eliteChromosomes);

@@ -42,6 +42,12 @@ public class Chromosome extends SimpleChromosome{
 		readToGenes(geneFile);
 	}
 	
+	public Chromosome(SimpleChromosome c) {
+		this.setGenes(c.getGenes());
+		geneFile = null;
+		geneRectangles = new ArrayList<Rectangle>();
+	}
+	
 	/**
 	 * Reads the given file into the array genes; throws IncorrectFileSizeException if
 	 * the format of the file is different than required (10x10 or 2x10)
