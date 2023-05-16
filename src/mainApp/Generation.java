@@ -191,6 +191,22 @@ public class Generation {
         return selectRoulette(newGen);
     }
 
+    public ArrayList<SimpleChromosome> selectBestRandomWorst(ArrayList<SimpleChromosome> newGen) {
+        ArrayList<SimpleChromosome> nextGen = new ArrayList<SimpleChromosome>();
+        for(int i=0; i < newGen.size()/4; i++) {
+            byte[] genes = Arrays.copyOf(newGen.get(i).getGenes(), newGen.get(i).getGenes().length);
+            nextGen.add(new SimpleChromosome(genes));
+        }
+        for(int i=0; i < newGen.size()/8; i++) {
+            byte[] genes = Arrays.copyOf(newGen.get(newGen.size() - i-1).getGenes(), newGen.get(newGen.size() - i-1).getGenes().length);
+            nextGen.add(new SimpleChromosome(genes));
+        }
+        while(nextGen.size() < newGen.size()/2) {
+            nextGen.add(newGen.get((int) (Math.random() * newGen.size())));
+        }
+        return nextGen;
+    }
+
     // Fills the genome of each chromosome with seeded random values
     private void createGeneration() {
         Random rand = new Random(seed);

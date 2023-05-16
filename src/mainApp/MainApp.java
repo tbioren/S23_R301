@@ -33,7 +33,7 @@ public class MainApp {// we need to refactor some of this code, we need a constr
     private String selectionString;
     
     private SelectionMethod selectionMethod;
-    private String[] selectionMethods = {"Truncation", "Roulette", "Rank"};
+    private String[] selectionMethods = {"Truncation", "Roulette", "Rank", "Best Random Worst"};
     private boolean crossover;
     private boolean isRunning = false;
     private GenerationComponent generation = new GenerationComponent();
@@ -143,7 +143,9 @@ public class MainApp {// we need to refactor some of this code, we need a constr
 				  			selectionMethod = SelectionMethod.ROULETTE;
 				  		} else if (selectionString == "Rank") {
 				  			selectionMethod = SelectionMethod.RANK;
-				  		} else {
+				  		} else if (selectionString == "Best Random Worst"){
+							selectionMethod = SelectionMethod.BEST_RANDOM_WORST;
+						} else {
 				  			selectionMethod = SelectionMethod.TOP_HALF;
 				  		}
 						

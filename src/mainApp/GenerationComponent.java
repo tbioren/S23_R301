@@ -25,7 +25,7 @@ public class GenerationComponent extends JComponent {
 	private final Color DIVERSITY_COLOR = Color.BLUE;
 
 	private final int TERMINATION_FITNESS = 100;
-	private final FitnessMethod FITNESS_METHOD = FitnessMethod.ONES;
+	private final FitnessMethod FITNESS_METHOD = FitnessMethod.TROUGHS;
   	
   	
   	private Generation generation;
