@@ -27,7 +27,7 @@ public class Generation {
     }
 
     public Generation() {
-        this(100, 100);
+        this(100, 1000);
     }
     
     public Chromosome getBestChromo() {
@@ -65,6 +65,12 @@ public class Generation {
                 break;
             case RANK:
                 bestChromosomes = selectRank(genSansElites);
+                break;
+            case TRUNCATION:
+                bestChromosomes = selectTruncation(genSansElites);
+                break;
+            case BEST_RANDOM_WORST: 
+                bestChromosomes = selectBestRandomWorst(genSansElites);
                 break;
         }
         if(crossover) bestChromosomes = crossover(bestChromosomes); // Crossover the best chromosomes LEAVE COMMENTED FOR M2
@@ -156,6 +162,17 @@ public class Generation {
         return newGen;
     }
 
+    private ArrayList<SimpleChromosome> selectTruncation(ArrayList<SimpleChromosome> newGen) {
+        ArrayList<SimpleChromosome> newGeneration = new ArrayList<SimpleChromosome>();
+        for(int i=9*newGen.size()/10; i < newGen.size(); i++) {
+            for(int j=0; j < 5; j++) {
+                byte[] genes = Arrays.copyOf(newGen.get(i).getGenes(), newGen.get(i).getGenes().length);
+                newGeneration.add(new SimpleChromosome(genes));
+            }
+        }
+        return newGeneration;
+    }
+
     // Selects the top 1/2 of the generation to pass through to the next generation
     private ArrayList<SimpleChromosome> selectTopHalf(ArrayList<SimpleChromosome> newGen) {
         ArrayList<SimpleChromosome> newGeneration = new ArrayList<SimpleChromosome>();
@@ -193,11 +210,11 @@ public class Generation {
 
     public ArrayList<SimpleChromosome> selectBestRandomWorst(ArrayList<SimpleChromosome> newGen) {
         ArrayList<SimpleChromosome> nextGen = new ArrayList<SimpleChromosome>();
-        for(int i=0; i < newGen.size()/4; i++) {
+        for(int i=0; i < newGen.size()/8; i++) {
             byte[] genes = Arrays.copyOf(newGen.get(i).getGenes(), newGen.get(i).getGenes().length);
             nextGen.add(new SimpleChromosome(genes));
         }
-        for(int i=0; i < newGen.size()/8; i++) {
+        for(int i=0; i < newGen.size()/4; i++) {
             byte[] genes = Arrays.copyOf(newGen.get(newGen.size() - i-1).getGenes(), newGen.get(newGen.size() - i-1).getGenes().length);
             nextGen.add(new SimpleChromosome(genes));
         }
@@ -213,7 +230,8 @@ public class Generation {
         for (int i = 0; i < generation.length; i++) {
             byte[] tempGenes = new byte[chromosomeSize];
             for(int j=0; j < tempGenes.length; j++) {
-                tempGenes[j] = rand.nextBoolean() ? (byte) 1 : (byte) 0;
+                //tempGenes[j] = rand.nextBoolean() ? (byte) 1 : (byte) 0;
+                tempGenes[j] = 0;
             }
             generation[i] = new SimpleChromosome(tempGenes);
         }
@@ -248,7 +266,7 @@ public class Generation {
 
     public int getAvgHammingDistance() {
         int sum = 0;
-        for(int i=0; i < generation[0].getGenes().length; i++) {
+        for(int i=0; i < generation.length; i++) {
             int zero = 0, one = 0;
             for(int j=0; j < generation[i].getGenes().length; j++) {
                 if(generation[i].getGenes()[j] == 0) {

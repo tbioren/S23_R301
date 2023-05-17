@@ -5,5 +5,5 @@ enum FitnessMethod {
 }
 
 enum SelectionMethod {
-    TOP_HALF, ROULETTE, RANK, BEST_RANDOM_WORST
+    TOP_HALF, ROULETTE, RANK, BEST_RANDOM_WORST, TRUNCATION
 }

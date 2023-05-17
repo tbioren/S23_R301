@@ -145,6 +145,8 @@ public class MainApp {// we need to refactor some of this code, we need a constr
 				  			selectionMethod = SelectionMethod.RANK;
 				  		} else if (selectionString == "Best Random Worst"){
 							selectionMethod = SelectionMethod.BEST_RANDOM_WORST;
+						} else if (selectionString == "Truncation"){
+							selectionMethod = SelectionMethod.TRUNCATION;
 						} else {
 				  			selectionMethod = SelectionMethod.TOP_HALF;
 				  		}
