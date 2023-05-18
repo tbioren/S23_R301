@@ -48,7 +48,7 @@ public class PopulationComponent extends JComponent{
 				g2.fillRect(0, 0, 10, 10);
 				for(int r = 0; r < 10; r++) {
 					for(int c = 0; c < 10; c++) {
-						if(matrix[i][j][r * 10 + c] == 0) 
+						if(matrix[i][j][c * 10 + r] == 0) 
 							g2.setColor(COLOR_0);
 						else
 							g2.setColor(COLOR_1);
