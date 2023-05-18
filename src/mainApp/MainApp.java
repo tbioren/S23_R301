@@ -16,7 +16,7 @@ import javax.swing.*;
  * <br>Restrictions: None
  * 
  */
-public class MainApp {// we need to refactor some of this code, we need a constructor.
+public class MainApp {
 	private final String FRAME_TITLE = "Chromosome Thingiemabob";
 	private final String GENERATION_FRAME_TITLE = "Evolution Viewer";
     private final int FRAME_WIDTH = 600;
