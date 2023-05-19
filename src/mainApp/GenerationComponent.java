@@ -25,7 +25,7 @@ public class GenerationComponent extends JComponent {
 	private final Color DIVERSITY_COLOR = Color.BLUE;
 
 	private final int TERMINATION_FITNESS = 100;
-	private final FitnessMethod FITNESS_METHOD = FitnessMethod.DECREASING_SIGNIFICANCE;
+	private final FitnessMethod FITNESS_METHOD = FitnessMethod.COMPARE_TO_CHROMOSOME;
   	
   	
   	private Generation generation;
@@ -111,8 +111,8 @@ public class GenerationComponent extends JComponent {
   		bestLog.add(generation.getBestFitness(FITNESS_METHOD));
   		worstLog.add(generation.getWorstFitness(FITNESS_METHOD));
   		avgLog.add(generation.getAvgFitness(FITNESS_METHOD));
-		diversityNormilizer = 100.0 / generation.getAvgHammingDistance();
-		diversityLog.add((int) (generation.getAvgHammingDistance()*diversityNormilizer));
+		diversityNormalizer = 100.0 / generation.getAvgHammingDistance();
+		diversityLog.add((int) (generation.getAvgHammingDistance()*diversityNormalizer));
   		xInc = 0;
   		yInc = 0;
   		genCount = 0;
