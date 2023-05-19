@@ -35,7 +35,7 @@ public class MainApp {
     private String selectionString;
     
     private SelectionMethod selectionMethod;
-    private String[] selectionMethods = {"Truncation", "Roulette", "Rank"};
+    private String[] selectionMethods = {"Truncation", "Roulette", "Rank", "Best Random Worst"};
     private boolean crossover;
     private boolean isRunning = false;
     private boolean fromBeginning = true;
@@ -160,8 +160,7 @@ public class MainApp {
 					} catch (NumberFormatException e1) {
 						populationSize = 100;
 					}
-					if(fromBeginning)
-						generation.setPopulationSize(populationSize);
+					if(fromBeginning) generation.setPopulationSize(populationSize);
 					
 					try {
 						generationNum = Integer.parseInt(generationTextField.getText());
