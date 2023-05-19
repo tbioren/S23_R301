@@ -12,7 +12,6 @@ public class Generation {
     private SimpleChromosome[] generation;
     private int chromosomeSize;
     private long seed;
-    private final int CROSSOVER_POINT = 50;
     private Chromosome bestChromo;
 
     public Generation(long seed, int size, int chromosomeSize) {
@@ -39,14 +38,12 @@ public class Generation {
     }
     
 
-
     /**
      * Creates a new generation of chromosomes with random genes
      */
     public void evolve(FitnessMethod fitnessMethod, SelectionMethod selectionMethod, double mutationRate, double elitismNumber, boolean crossover) {
         sortGeneration(fitnessMethod);
-        
-        
+        getBestFitness(fitnessMethod);
         
         // Separate the elite chromosomes from the rest of the generation
         ArrayList<SimpleChromosome> eliteChromosomes = getElites(elitismNumber);
@@ -74,7 +71,7 @@ public class Generation {
                 break;
         }
         if(crossover) bestChromosomes = crossover(bestChromosomes); // Crossover the best chromosomes LEAVE COMMENTED FOR M2
-        ArrayList<SimpleChromosome> newGeneration = mutate(bestChromosomes, mutationRate);
+        ArrayList<SimpleChromosome> newGeneration = mutate(bestChromosomes, mutationRate, genSansElites.size() % 2 == 1);
 
         // Since you cant have half a chromosome, if the elitism number is odd, remove the first chromosome (the worst one)
         if (elitismNumber % 2 != 0){
@@ -85,11 +82,10 @@ public class Generation {
         for(SimpleChromosome chromosome : eliteChromosomes) {
             newGeneration.add(new SimpleChromosome(chromosome.getGenes()));
         }
+        
+        
         generation = newGeneration.toArray(new SimpleChromosome[0]);
-        //printAverageFitness(fitnessMethod);
-        // Don't remove the comment on the next line
-        //System.out.prntln();
-        bestChromo = new Chromosome(generation[generation.length - 1]);
+        
     }
 
     public void printAverageFitness(FitnessMethod fitnessMethod) {
@@ -106,11 +102,12 @@ public class Generation {
     }
 
     // Creates 2 mutant children from each parent
-    private ArrayList<SimpleChromosome> mutate(ArrayList<SimpleChromosome> bestChromosomes, double mutationRate) {
+    private ArrayList<SimpleChromosome> mutate(ArrayList<SimpleChromosome> bestChromosomes, double mutationRate, boolean isOdd) {
         ArrayList<SimpleChromosome> newGeneration = new ArrayList<SimpleChromosome>();
         for(int i = 0; i < bestChromosomes.size(); i++) {
             newGeneration.add(new SimpleChromosome(bestChromosomes.get(i).getGenes()));
-            newGeneration.add(new SimpleChromosome(bestChromosomes.get(i).getGenes()));
+            if(!(isOdd && i == bestChromosomes.size() - 1))
+            	newGeneration.add(new SimpleChromosome(bestChromosomes.get(i).getGenes()));
         }
         for(SimpleChromosome chromosome : newGeneration) {
             chromosome.mutate(mutationRate);
@@ -121,12 +118,14 @@ public class Generation {
     // Crossover. It's complicated so look at the technical documentation if you're big enough of a nerd to care
     private ArrayList<SimpleChromosome> crossover(ArrayList<SimpleChromosome> bestChromosomes) {
         System.out.println("Crossover");
+        int crossoverPoint = bestChromosomes.size() / 2;
         ArrayList<SimpleChromosome> newGeneration = new ArrayList<SimpleChromosome>();
-        for(int i=0; i < bestChromosomes.size(); i+=2) {
-            byte[] parent1Start = Arrays.copyOfRange(bestChromosomes.get(i).getGenes(), 0, CROSSOVER_POINT);
-            byte[] parent1End = Arrays.copyOfRange(bestChromosomes.get(i).getGenes(), CROSSOVER_POINT, chromosomeSize);
-            byte[] parent2Start = Arrays.copyOfRange(bestChromosomes.get(i+1).getGenes(), 0, CROSSOVER_POINT);
-            byte[] parent2End = Arrays.copyOfRange(bestChromosomes.get(i+1).getGenes(), CROSSOVER_POINT, chromosomeSize);
+        if(bestChromosomes.size() % 2 != 0) newGeneration.add(bestChromosomes.get(bestChromosomes.size() - 1));
+        for(int i=0; i < bestChromosomes.size() - 1; i+=2) {
+            byte[] parent1Start = Arrays.copyOfRange(bestChromosomes.get(i).getGenes(), 0, crossoverPoint);
+            byte[] parent1End = Arrays.copyOfRange(bestChromosomes.get(i).getGenes(), crossoverPoint, chromosomeSize);
+            byte[] parent2Start = Arrays.copyOfRange(bestChromosomes.get(i+1).getGenes(), 0, crossoverPoint);
+            byte[] parent2End = Arrays.copyOfRange(bestChromosomes.get(i+1).getGenes(), crossoverPoint, chromosomeSize);
             byte[] child1 = new byte[chromosomeSize];
             byte[] child2 = new byte[chromosomeSize];
             for(int j=0; j < parent1Start.length; j++) {
@@ -134,8 +133,8 @@ public class Generation {
                 child2[j] = parent2Start[j];
             }
             for(int j=0; j < parent1End.length; j++) {
-                child1[j+CROSSOVER_POINT] = parent1End[j];
-                child2[j+CROSSOVER_POINT] = parent2End[j];
+                child1[j+crossoverPoint] = parent1End[j];
+                child2[j+crossoverPoint] = parent2End[j];
             }
             newGeneration.add(new SimpleChromosome(child1));
             newGeneration.add(new SimpleChromosome(child2));
@@ -247,6 +246,7 @@ public class Generation {
     
     public byte getBestFitness(FitnessMethod fitnessMethod) {
     	sortGeneration(fitnessMethod);
+    	bestChromo = new Chromosome(generation[generation.length - 1]);
     	return (byte)generation[generation.length - 1].getFitness();
     }
     

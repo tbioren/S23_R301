@@ -16,11 +16,13 @@ import javax.swing.*;
  * <br>Restrictions: None
  * 
  */
-public class MainApp {// we need to refactor some of this code, we need a constructor.
+public class MainApp {
 	private final String FRAME_TITLE = "Chromosome Thingiemabob";
 	private final String GENERATION_FRAME_TITLE = "Evolution Viewer";
     private final int FRAME_WIDTH = 600;
     private final int FRAME_HEIGHT = 700;
+    private final int PFRAME_WIDTH = 653;
+    private final int PFRAME_HEIGHT = 675;
     private final int DELAY = 5;
     public static final int GENERATION_FRAME_WIDTH = 1200;
     public static final int GENERATION_FRAME_HEIGHT = 600;
@@ -36,8 +38,10 @@ public class MainApp {// we need to refactor some of this code, we need a constr
     private String[] selectionMethods = {"Truncation", "Roulette", "Rank", "Best Random Worst"};
     private boolean crossover;
     private boolean isRunning = false;
+    private boolean fromBeginning = true;
     private GenerationComponent generation = new GenerationComponent();
     private JFrame generationFrame = new JFrame();
+    private boolean restarting = false;;
 	
 	/**
 	 * Manages the general structure of the app. Serves as the graphics viewer class that manages the 
@@ -123,86 +127,80 @@ public class MainApp {// we need to refactor some of this code, we need a constr
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				if(!generation.isTerminated()) {
-					if (evolutionButton.getText() == "Start Evolution") {
-						evolutionButton.setText("Pause Evolution");
-						System.out.println("Starting evolution.");
-						isRunning = true;
-						try {
-							mutationRate = Double.parseDouble(mutationTextField.getText());
-							System.out.println("successfully parsed");
-						} catch (NumberFormatException e1) {
-							mutationRate = 0.01;
-						}
-						
-						generation.setMutationRate(mutationRate);
-						
-						selectionString = selectionBox.getSelectedItem().toString();
-						
-						if (selectionString == "Roulette") {
-				  			selectionMethod = SelectionMethod.ROULETTE;
-				  		} else if (selectionString == "Rank") {
-				  			selectionMethod = SelectionMethod.RANK;
-				  		} else if (selectionString == "Best Random Worst"){
-							selectionMethod = SelectionMethod.BEST_RANDOM_WORST;
-						} else if (selectionString == "Truncation"){
-							selectionMethod = SelectionMethod.TRUNCATION;
-						} else {
-				  			selectionMethod = SelectionMethod.TOP_HALF;
-				  		}
-						
-						generation.setSelectionMethod(selectionMethod);
-						// Crossover
-						
-						try {
-							populationSize = Integer.parseInt(populationTextField.getText());
-						} catch (NumberFormatException e1) {
-							populationSize = 100;
-						}
-						
-						
-						generation.setPopulationSize(populationSize);
-						
-						try {
-							generationNum = Integer.parseInt(generationTextField.getText());
-						} catch (NumberFormatException e1) {
-							generationNum = 100;
-						}
-						
-						generation.setNumOfGen(generationNum);
-						
-						try {
-							genomeLength = Integer.parseInt(genomeTextField.getText());
-						} catch (NumberFormatException e1) {
-							genomeLength = 100;
-						}
-						
-						generation.setGenomeLength(genomeLength);
-						
-						try {
-							elitismPercent = Double.parseDouble(elitismTextField.getText());
-						} catch (NumberFormatException e1) {
-							elitismPercent = 0;
-						}
-						
-						generation.setEliteNum(elitismPercent * populationSize);
-						
-						
-						generation.setCrossover(crossover);
-					} else {
-						evolutionButton.setText("Start Evolution");
-						System.out.println("Pausing evolution.");
-						isRunning = false;
+				if (evolutionButton.getText() == "Start Evolution" || evolutionButton.getText() == "Restart Evolution") {
+					if(evolutionButton.getText() == "Restart Evolution"){
+						generation.reset();
+						restarting = false;
 					}
-//				} else {
-//					evolutionButton.setText("Restart Evolution");
-//					isRunning = false;
-//					restartGeneration();
-//					
-//				}
-				
+					evolutionButton.setText("Pause Evolution");
+					isRunning = true;
+					try {
+						mutationRate = Double.parseDouble(mutationTextField.getText());
+					} catch (NumberFormatException e1) {
+						mutationRate = 0.01;
+					}
+
+					generation.setMutationRate(mutationRate);
+
+					selectionString = selectionBox.getSelectedItem().toString();
+
+					if (selectionString == "Roulette") {
+						selectionMethod = SelectionMethod.ROULETTE;
+					} else if (selectionString == "Rank") {
+						selectionMethod = SelectionMethod.RANK;
+					} else {
+						selectionMethod = SelectionMethod.TOP_HALF;
+					}
+
+					generation.setSelectionMethod(selectionMethod);
+					// Crossover
+
+					try {
+						populationSize = Integer.parseInt(populationTextField.getText());
+					} catch (NumberFormatException e1) {
+						populationSize = 100;
+					}
+					if(fromBeginning) generation.setPopulationSize(populationSize);
+					
+					try {
+						generationNum = Integer.parseInt(generationTextField.getText());
+					} catch (NumberFormatException e1) {
+						generationNum = 100;
+					}
+
+					generation.setNumOfGen(generationNum);
+
+					try {
+						genomeLength = Integer.parseInt(genomeTextField.getText());
+					} catch (NumberFormatException e1) {
+						genomeLength = 100;
+					}
+					if(genomeLength > 100 || genomeLength < 0)
+						genomeLength = 100;
+					if(fromBeginning)
+						generation.setGenomeLength(genomeLength);
+
+					try {
+						elitismPercent = Double.parseDouble(elitismTextField.getText());
+					} catch (NumberFormatException e1) {
+						elitismPercent = 0;
+					}
+
+					generation.setEliteNum(elitismPercent * populationSize);
+
+
+					generation.setCrossover(crossover);
+					
+					
+				} else {
+					evolutionButton.setText("Start Evolution");
+					isRunning = false;
+					fromBeginning = false;
+				}
+
+
 			}
-			
+
 		});
 		
 		crossoverCheck.addItemListener(new ItemListener(){
@@ -243,7 +241,7 @@ public class MainApp {// we need to refactor some of this code, we need a constr
 			public void actionPerformed(ActionEvent e) {
 				try {
 					chromosome.mutateChromosome(Double.parseDouble(textField.getText())); 
-				} catch(NumberFormatException e1){ //make sure the code doesn't crash if the text field is empty
+				} catch(NumberFormatException e1){ 
 					chromosome.mutateChromosome();
 				}
 				System.out.println("Mutate chromosome.");
@@ -284,7 +282,6 @@ public class MainApp {// we need to refactor some of this code, we need a constr
 		
 		class SaveListener implements ActionListener {
 			
-			// Something's wrong here because yous shouldn't print the exceptions
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -303,12 +300,12 @@ public class MainApp {// we need to refactor some of this code, we need a constr
 		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		
 		pFrame.pack();
-		pFrame.setSize(650, 650);
+		pFrame.setSize(PFRAME_WIDTH, PFRAME_HEIGHT);
 		
 		Timer t = new Timer(DELAY, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if(isRunning) {
+				if(isRunning && !generation.isTerminated()) {
 					generation.update();
 					chromosome.setChromo(generation.getBestChromo());
 					generation.repaint();
@@ -320,6 +317,11 @@ public class MainApp {// we need to refactor some of this code, we need a constr
 					pFrame.repaint();
 					
 				}
+				if(generation.isTerminated()) {
+					evolutionButton.setText("Restart Evolution");
+					restarting = true;
+					fromBeginning = true;
+				}
 				
 			}
 		});
@@ -330,12 +332,6 @@ public class MainApp {// we need to refactor some of this code, we need a constr
 		generationFrame.pack();
 		generationFrame.setSize(GENERATION_FRAME_WIDTH, GENERATION_FRAME_HEIGHT);
 	} // runApp
-
-	public void restartGeneration() {
-		generation = new GenerationComponent(populationSize, genomeLength, generationNum, mutationRate, selectionMethod, elitismPercent);
-		generation.repaint();
-		generationFrame.repaint();
-	}
 	
 	
 	/**

@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class SimpleChromosome implements Comparable<SimpleChromosome>{
     protected byte[] genes;
     private int fitness;
-    private final byte[] SMILEY_COMPARISON = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    private static final byte[] SMILEY_COMPARISON = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
         1,0,0,1,1,0,0,1,1,1,1,0,0,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
         1,0,1,1,1,1,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
     // private final int[] SPECIAL_NUMS = {1,2,4,8,16,32,64,128,256,512,1024};

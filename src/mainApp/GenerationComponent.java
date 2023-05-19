@@ -46,6 +46,9 @@ public class GenerationComponent extends JComponent {
   	private double eliteNum;
   	private boolean crossover;
   	private boolean terminated;
+  	private long seed;
+  	private double elitePercent;
+  	
 	
 	public GenerationComponent() {
 		this(100, 100, 100, 0.01, SelectionMethod.TOP_HALF, 0.0);
@@ -58,6 +61,7 @@ public class GenerationComponent extends JComponent {
 	public GenerationComponent(long seed, int generationSize, int chromosomeSize, int maxGens, double mutationRate, SelectionMethod sm, double elitismPercent) {
   		this.setPreferredSize(new Dimension(MainApp.GENERATION_FRAME_WIDTH, MainApp.GENERATION_FRAME_HEIGHT) );
   		generation = new Generation(seed, generationSize, chromosomeSize);
+  		this.seed = seed;
   		this.maxGens = maxGens;
   		bestLog = new ArrayList<Byte>();
   		worstLog = new ArrayList<Byte>();
@@ -75,6 +79,7 @@ public class GenerationComponent extends JComponent {
   		selectionMethod = sm;
   		crossover = false;
   		eliteNum = generationSize * elitismPercent;
+  		elitePercent = elitismPercent;
   		terminated = false;
   		populationSize = generationSize;
   		genomeLength = chromosomeSize;
@@ -84,11 +89,36 @@ public class GenerationComponent extends JComponent {
   	public void setMutationRate(double rate) {mutationRate = rate;}
   	public void setFitnessMethod(FitnessMethod m) {fitnessMethod = m;}
   	public void setSelectionMethod(SelectionMethod m) {selectionMethod = m;}
-  	public void setGenomeLength(int g) {genomeLength = g;}
-  	public void setPopulationSize(int p) {populationSize = p;}
+  	public void setGenomeLength(int g) {
+  		genomeLength = g;
+  		generation = new Generation(seed, populationSize, genomeLength);
+  	}
+  	public void setPopulationSize(int p) {
+  		populationSize = p;
+  		generation = new Generation(seed, populationSize, genomeLength);
+  	}
   	public void setEliteNum(double e) {eliteNum = e;}
   	public void setCrossover(boolean tf) {crossover = tf;}
   	public Chromosome getBestChromo() {return generation.getBestChromo();}
+  	
+  	public void reset() {
+  		generation = new Generation(seed, populationSize, genomeLength);
+  		bestLog = new ArrayList<Byte>();
+  		worstLog = new ArrayList<Byte>();
+  		avgLog = new ArrayList<Byte>();
+		diversityLog = new ArrayList<Integer>();
+  		bestLog.add(generation.getBestFitness(FITNESS_METHOD));
+  		worstLog.add(generation.getWorstFitness(FITNESS_METHOD));
+  		avgLog.add(generation.getAvgFitness(FITNESS_METHOD));
+		diversityNormilizer = 100.0 / generation.getAvgHammingDistance();
+		diversityLog.add((int) (generation.getAvgHammingDistance()*diversityNormilizer));
+  		xInc = 0;
+  		yInc = 0;
+  		genCount = 0;
+  		crossover = false;
+  		eliteNum = populationSize * elitePercent;
+  		terminated = false;
+  	}
   	
   	@Override
   	protected void paintComponent(Graphics g) {
