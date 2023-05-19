@@ -24,7 +24,7 @@ public class MainApp {
     private final int PFRAME_WIDTH = 653;
     private final int PFRAME_HEIGHT = 675;
     private final int DELAY = 5;
-    public static final int GENERATION_FRAME_WIDTH = 1200;
+    public static final int GENERATION_FRAME_WIDTH = 1500;
     public static final int GENERATION_FRAME_HEIGHT = 600;
     
     private double mutationRate;
@@ -33,9 +33,12 @@ public class MainApp {
     private int genomeLength;
     private double elitismPercent;
     private String selectionString;
+	private String fitnessString;
     
     private SelectionMethod selectionMethod;
+	private FitnessMethod fitnessMethod;
     private String[] selectionMethods = {"Truncation", "Roulette", "Rank", "Best Random Worst"};
+	private String[] fitnessMethods = {"Ones", "Compare To Chromosome", "Switches", "Decreasing Significance", "Troughs"};
     private boolean crossover;
     private boolean isRunning = false;
     private boolean fromBeginning = true;
@@ -95,6 +98,12 @@ public class MainApp {
 		interactionPanel.add(selectionTextLabel);
 		interactionPanel.add(selectionBox);
 		selectionBox.setEnabled(true);
+
+		JLabel fitnessTextLabel = new JLabel("Fitness Method ");
+		JComboBox fitnessBox = new JComboBox(fitnessMethods);
+		interactionPanel.add(fitnessTextLabel);
+		interactionPanel.add(fitnessBox);
+		fitnessBox.setEnabled(true);
 		
 		JLabel crossoverYN = new JLabel("Crossover Y/N?");
 		JCheckBox crossoverCheck = new JCheckBox();
@@ -153,6 +162,23 @@ public class MainApp {
 					}
 
 					generation.setSelectionMethod(selectionMethod);
+
+					fitnessString = fitnessBox.getSelectedItem().toString();
+
+					if (fitnessString == "Compare To Chromosome") {
+						fitnessMethod = FitnessMethod.COMPARE_TO_CHROMOSOME;
+					} else if (fitnessString == "Decreasing Significance") {
+						fitnessMethod = FitnessMethod.DECREASING_SIGNIFICANCE;
+					} else if (fitnessString == "Switches") {
+						fitnessMethod = FitnessMethod.SWITCHES;
+					} else if (fitnessString == "Troughs"){
+						fitnessMethod = FitnessMethod.TROUGHS;
+					} else {
+						fitnessMethod = FitnessMethod.ONES;
+					}
+
+					generation.setFitnessMethod(fitnessMethod);
+
 					// Crossover
 
 					try {
