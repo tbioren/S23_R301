@@ -78,17 +78,20 @@ public class PopulationComponent extends JComponent{
 			g2.translate(0, (borderWidth + boxWidth) * i);
 			for(int j = 0; j < matrix[i].length; j++) {
 				g2.translate((borderWidth + boxWidth) * j, 0);
-				for(int r = 0; r < matrix[i][j].length / 10; r++) {
+				for(int r = 0; r < (matrix[i][j].length % 10 == 0 ? matrix[i][j].length / 10 : matrix[i][j].length % 10 + 1); r++) {
 					for(int c = 0; c < 10; c++) {
-						if(matrix[i][j][r * 10 +  c] == 0) {
-							g2.setColor(COLOR_0);
-							g2.fillRect(c * pixelWidth, r * pixelWidth, pixelWidth, pixelWidth);
+						try {
+							if(matrix[i][j][r * 10 +  c] == 0) {
+								g2.setColor(COLOR_0);
+								g2.fillRect(c * pixelWidth, r * pixelWidth, pixelWidth, pixelWidth);
+							}
+							else if(matrix[i][j][r * 10 + c] == 1) {
+								g2.setColor(COLOR_1);
+								g2.fillRect(c * pixelWidth, r * pixelWidth, pixelWidth, pixelWidth);
+							}
+						} catch(IndexOutOfBoundsException e) {
+
 						}
-						else if(matrix[i][j][r * 10 + c] == 1) {
-							g2.setColor(COLOR_1);
-							g2.fillRect(c * pixelWidth, r * pixelWidth, pixelWidth, pixelWidth);
-						}
-						
 					}
 				}
 				g2.translate(-(borderWidth + boxWidth) * j, 0);
