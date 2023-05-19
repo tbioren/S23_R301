@@ -9,7 +9,7 @@ public class SimpleChromosome implements Comparable<SimpleChromosome>{
         1,0,0,1,1,0,0,1,1,1,1,0,0,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
         1,0,1,1,1,1,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
     // private final int[] SPECIAL_NUMS = {1,2,4,8,16,32,64,128,256,512,1024};
-    private final int[] SPECIAL_NUMS = {200,400,500,600,700,800,900,1000};
+    private final int[] SPECIAL_NUMS = {0,1,2,3,4,5,6,7,8,9,10,20,30,40,50,65,80,100};
 
     public SimpleChromosome() {
         genes = new byte[0];
@@ -96,7 +96,7 @@ public class SimpleChromosome implements Comparable<SimpleChromosome>{
         for(int specialNum : SPECIAL_NUMS) {
             if(distToSpecialNum > Math.abs(specialNum - setBits)) distToSpecialNum = (int) Math.abs(specialNum - setBits);
         }
-        fitness = 100*(setBits - 2*distToSpecialNum)/1024;
+        fitness = setBits - distToSpecialNum;
     }
 
     public int getFitness() {
