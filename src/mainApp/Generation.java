@@ -12,7 +12,6 @@ public class Generation {
     private SimpleChromosome[] generation;
     private int chromosomeSize;
     private long seed;
-    private final int CROSSOVER_POINT = 50;
     private Chromosome bestChromo;
 
     public Generation(long seed, int size, int chromosomeSize) {
@@ -115,12 +114,14 @@ public class Generation {
     // Crossover. It's complicated so look at the technical documentation if you're big enough of a nerd to care
     private ArrayList<SimpleChromosome> crossover(ArrayList<SimpleChromosome> bestChromosomes) {
         System.out.println("Crossover");
+        int crossoverPoint = bestChromosomes.size() / 2;
         ArrayList<SimpleChromosome> newGeneration = new ArrayList<SimpleChromosome>();
-        for(int i=0; i < bestChromosomes.size(); i+=2) {
-            byte[] parent1Start = Arrays.copyOfRange(bestChromosomes.get(i).getGenes(), 0, CROSSOVER_POINT);
-            byte[] parent1End = Arrays.copyOfRange(bestChromosomes.get(i).getGenes(), CROSSOVER_POINT, chromosomeSize);
-            byte[] parent2Start = Arrays.copyOfRange(bestChromosomes.get(i+1).getGenes(), 0, CROSSOVER_POINT);
-            byte[] parent2End = Arrays.copyOfRange(bestChromosomes.get(i+1).getGenes(), CROSSOVER_POINT, chromosomeSize);
+        if(bestChromosomes.size() % 2 != 0) newGeneration.add(bestChromosomes.get(bestChromosomes.size() - 1));
+        for(int i=0; i < bestChromosomes.size() - 1; i+=2) {
+            byte[] parent1Start = Arrays.copyOfRange(bestChromosomes.get(i).getGenes(), 0, crossoverPoint);
+            byte[] parent1End = Arrays.copyOfRange(bestChromosomes.get(i).getGenes(), crossoverPoint, chromosomeSize);
+            byte[] parent2Start = Arrays.copyOfRange(bestChromosomes.get(i+1).getGenes(), 0, crossoverPoint);
+            byte[] parent2End = Arrays.copyOfRange(bestChromosomes.get(i+1).getGenes(), crossoverPoint, chromosomeSize);
             byte[] child1 = new byte[chromosomeSize];
             byte[] child2 = new byte[chromosomeSize];
             for(int j=0; j < parent1Start.length; j++) {
@@ -128,8 +129,8 @@ public class Generation {
                 child2[j] = parent2Start[j];
             }
             for(int j=0; j < parent1End.length; j++) {
-                child1[j+CROSSOVER_POINT] = parent1End[j];
-                child2[j+CROSSOVER_POINT] = parent2End[j];
+                child1[j+crossoverPoint] = parent1End[j];
+                child2[j+crossoverPoint] = parent2End[j];
             }
             newGeneration.add(new SimpleChromosome(child1));
             newGeneration.add(new SimpleChromosome(child2));
@@ -232,7 +233,7 @@ public class Generation {
 
     public int getAvgHammingDistance() {
         int sum = 0;
-        for(int i=0; i < generation[0].getGenes().length; i++) {
+        for(int i=0; i < generation.length; i++) {
             int zero = 0, one = 0;
             for(int j=0; j < generation[i].getGenes().length; j++) {
                 if(generation[i].getGenes()[j] == 0) {
