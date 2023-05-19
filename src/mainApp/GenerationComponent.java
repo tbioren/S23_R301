@@ -236,6 +236,7 @@ public class GenerationComponent extends JComponent {
   	}
   	
   	public SimpleChromosome[] getGeneration() {
+  		System.out.println("Generation Component Getter: " + generation.getGeneration().length);
     	return generation.getGeneration();
     }
   	

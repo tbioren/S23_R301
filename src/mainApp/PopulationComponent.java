@@ -16,20 +16,29 @@ public class PopulationComponent extends JComponent{
 	private int boxWidth;
 	private int borderWidth;
 	private int pixelWidth;
+	private int matrixLength;
 	
 	public PopulationComponent(SimpleChromosome[] g) {
 		this.generation = g;
 		this.popSize = g.length;
+		
+		for(int i = 0; i < Math.sqrt(Integer.MAX_VALUE); i++) {
+			if(i * i == popSize || i * i > popSize) {
+				matrixLength = i;
+				break;
+			} 
+		}
+		
 		int count = popSize;
 		try {
-			this.matrix = new byte[10][popSize % 10 == 0 ? popSize/10 : popSize/10+1][g[0].getGenes().length];
+			this.matrix = new byte[matrixLength][matrixLength][g[0].getGenes().length];
 		} catch(IndexOutOfBoundsException e) {
 			return;
 		}
 		for(int i = 0; i < matrix.length; i++) {
 			for(int j = 0; j < matrix[i].length; j++) {
 				if(count > 0) {
-					matrix[i][j] = g[i * 10 + j].getGenes();
+					matrix[i][j] = g[i * matrixLength + j].getGenes();
 					count--;
 				} else {
 					for(int k = 0; k < matrix[i][j].length; k++) {
@@ -43,16 +52,22 @@ public class PopulationComponent extends JComponent{
 	public void setGeneration(SimpleChromosome[] g) {
 		this.generation = g;
 		this.popSize = g.length;
+		for(int i = 0; i < Math.sqrt(Integer.MAX_VALUE); i++) {
+			if(i * i == popSize || i * i > popSize) {
+				matrixLength = i;
+				break;
+			} 
+		}
 		int count = popSize;
 		try {
-			this.matrix = new byte[popSize % 10 == 0 ? popSize/10 : popSize/10+1][10][g[0].getGenes().length];
+			this.matrix = new byte[matrixLength][matrixLength][g[0].getGenes().length];
 		} catch(IndexOutOfBoundsException e) {
 			return;
 		}
 		for(int i = 0; i < matrix.length; i++) {
 			for(int j = 0; j < matrix[i].length; j++) {
 				if(count > 0) {
-					matrix[i][j] = g[i * 10 + j].getGenes();
+					matrix[i][j] = g[i * matrixLength + j].getGenes();
 					count--;
 				} else {
 					for(int k = 0; k < matrix[i][j].length; k++) {
@@ -67,7 +82,7 @@ public class PopulationComponent extends JComponent{
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D)g;
-		double horBoxLength = this.getWidth() / (10.0 + 11 * BORDER_TO_BOX_RATIO);
+		double horBoxLength = this.getWidth() / (matrix.length + (matrix.length + 1.0) * BORDER_TO_BOX_RATIO);
 		double verBoxLength = this.getHeight() / (matrix.length + (matrix.length + 1.0) * BORDER_TO_BOX_RATIO);
 		double bestLength = horBoxLength < verBoxLength ? horBoxLength : verBoxLength;
 		boxWidth = (int)(Math.round(bestLength));

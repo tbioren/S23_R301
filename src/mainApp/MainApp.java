@@ -161,9 +161,8 @@ public class MainApp {
 						populationSize = 100;
 					}
 
-
+					
 					generation.setPopulationSize(populationSize);
-
 					try {
 						generationNum = Integer.parseInt(generationTextField.getText());
 					} catch (NumberFormatException e1) {

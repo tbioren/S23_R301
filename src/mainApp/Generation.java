@@ -45,7 +45,6 @@ public class Generation {
         sortGeneration(fitnessMethod);
         getBestFitness(fitnessMethod);
         
-        
         // Separate the elite chromosomes from the rest of the generation
         ArrayList<SimpleChromosome> eliteChromosomes = getElites(elitismNumber);
         ArrayList<SimpleChromosome> genSansElites = trimElites(eliteChromosomes);
@@ -66,7 +65,7 @@ public class Generation {
                 break;
         }
         if(crossover) bestChromosomes = crossover(bestChromosomes); // Crossover the best chromosomes LEAVE COMMENTED FOR M2
-        ArrayList<SimpleChromosome> newGeneration = mutate(bestChromosomes, mutationRate);
+        ArrayList<SimpleChromosome> newGeneration = mutate(bestChromosomes, mutationRate, genSansElites.size() % 2 == 1);
 
         // Since you cant have half a chromosome, if the elitism number is odd, remove the first chromosome (the worst one)
         if (elitismNumber % 2 != 0){
@@ -77,6 +76,8 @@ public class Generation {
         for(SimpleChromosome chromosome : eliteChromosomes) {
             newGeneration.add(new SimpleChromosome(chromosome.getGenes()));
         }
+        
+        
         generation = newGeneration.toArray(new SimpleChromosome[0]);
         
     }
@@ -95,11 +96,12 @@ public class Generation {
     }
 
     // Creates 2 mutant children from each parent
-    private ArrayList<SimpleChromosome> mutate(ArrayList<SimpleChromosome> bestChromosomes, double mutationRate) {
+    private ArrayList<SimpleChromosome> mutate(ArrayList<SimpleChromosome> bestChromosomes, double mutationRate, boolean isOdd) {
         ArrayList<SimpleChromosome> newGeneration = new ArrayList<SimpleChromosome>();
         for(int i = 0; i < bestChromosomes.size(); i++) {
             newGeneration.add(new SimpleChromosome(bestChromosomes.get(i).getGenes()));
-            newGeneration.add(new SimpleChromosome(bestChromosomes.get(i).getGenes()));
+            if(!(isOdd && i == bestChromosomes.size() - 1))
+            	newGeneration.add(new SimpleChromosome(bestChromosomes.get(i).getGenes()));
         }
         for(SimpleChromosome chromosome : newGeneration) {
             chromosome.mutate(mutationRate);
