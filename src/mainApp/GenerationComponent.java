@@ -25,7 +25,7 @@ public class GenerationComponent extends JComponent {
 	private final Color DIVERSITY_COLOR = Color.BLUE;
 
 	private final int TERMINATION_FITNESS = 100;
-	private final FitnessMethod FITNESS_METHOD = FitnessMethod.TROUGHS;
+	private final FitnessMethod FITNESS_METHOD = FitnessMethod.COMPARE_TO_CHROMOSOME;
   	
   	
   	private Generation generation;
@@ -48,7 +48,7 @@ public class GenerationComponent extends JComponent {
   	private boolean terminated;
 	
 	public GenerationComponent() {
-		this(500, 1500, 100, 0.01, SelectionMethod.TOP_HALF, 0.0);
+		this(100, 100, 100, 0.01, SelectionMethod.TOP_HALF, 0.0);
 	}
 	
 	public GenerationComponent(int generationSize, int chromosomeSize, int maxGens, double mutationRate, SelectionMethod sm, double elitismPercent) {
