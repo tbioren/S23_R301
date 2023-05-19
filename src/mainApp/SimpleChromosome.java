@@ -8,6 +8,8 @@ public class SimpleChromosome implements Comparable<SimpleChromosome>{
     private static final byte[] SMILEY_COMPARISON = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
         1,0,0,1,1,0,0,1,1,1,1,0,0,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
         1,0,1,1,1,1,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+    // private final int[] SPECIAL_NUMS = {1,2,4,8,16,32,64,128,256,512,1024};
+    private final int[] SPECIAL_NUMS = {0,1,2,3,4,5,6,7,8,9,10,20,30,40,50,65,80,100};
 
     public SimpleChromosome() {
         genes = new byte[0];
@@ -57,6 +59,8 @@ public class SimpleChromosome implements Comparable<SimpleChromosome>{
                 break;
             case DECREASING_SIGNIFICANCE:
                 getFitnessDecreasingSignificance();
+            case TROUGHS:
+                getFitnessTroughs();
                 break;
         }
     }
@@ -84,13 +88,24 @@ public class SimpleChromosome implements Comparable<SimpleChromosome>{
         }
         this.fitness = (int) (100*fitness/genes.length);;
     }
-
+  
     private void getFitnessDecreasingSignificance() {
         double fitness = 0;
         for(int i=0; i < genes.length; i++) {
             fitness += genes[i] * (genes.length - i);
         }
         this.fitness = (int) (100.0*fitness/(101*50.0));
+      }
+    private void getFitnessTroughs() {
+        int setBits = 0;
+        for (int i = 0; i < genes.length; i++) {
+            if(genes[i] == 1) setBits++;
+        }
+        int distToSpecialNum = Integer.MAX_VALUE;
+        for(int specialNum : SPECIAL_NUMS) {
+            if(distToSpecialNum > Math.abs(specialNum - setBits)) distToSpecialNum = (int) Math.abs(specialNum - setBits);
+        }
+        fitness = setBits - distToSpecialNum;
     }
 
     public int getFitness() {

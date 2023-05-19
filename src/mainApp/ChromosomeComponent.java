@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JComponent;
-//this should be the good version
 public class ChromosomeComponent extends JComponent{
 	
     private Chromosome chromo;
