@@ -38,13 +38,12 @@ public class Generation {
     }
     
 
-
     /**
      * Creates a new generation of chromosomes with random genes
      */
     public void evolve(FitnessMethod fitnessMethod, SelectionMethod selectionMethod, double mutationRate, double elitismNumber, boolean crossover) {
         sortGeneration(fitnessMethod);
-        
+        getBestFitness(fitnessMethod);
         
         
         // Separate the elite chromosomes from the rest of the generation
@@ -82,7 +81,7 @@ public class Generation {
         //printAverageFitness(fitnessMethod);
         // Don't remove the comment on the next line
         //System.out.prntln();
-        bestChromo = new Chromosome(generation[generation.length - 1]);
+        
     }
 
     public void printAverageFitness(FitnessMethod fitnessMethod) {
@@ -214,6 +213,7 @@ public class Generation {
     
     public byte getBestFitness(FitnessMethod fitnessMethod) {
     	sortGeneration(fitnessMethod);
+    	bestChromo = new Chromosome(generation[generation.length - 1]);
     	return (byte)generation[generation.length - 1].getFitness();
     }
     
