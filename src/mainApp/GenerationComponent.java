@@ -111,8 +111,8 @@ public class GenerationComponent extends JComponent {
   		bestLog.add(generation.getBestFitness(FITNESS_METHOD));
   		worstLog.add(generation.getWorstFitness(FITNESS_METHOD));
   		avgLog.add(generation.getAvgFitness(FITNESS_METHOD));
-		diversityNormilizer = 100.0 / generation.getAvgHammingDistance();
-		diversityLog.add((int) (generation.getAvgHammingDistance()*diversityNormilizer));
+		diversityNormalizer = 100.0 / generation.getAvgHammingDistance();
+		diversityLog.add((int) (generation.getAvgHammingDistance()*diversityNormalizer));
   		xInc = 0;
   		yInc = 0;
   		genCount = 0;
