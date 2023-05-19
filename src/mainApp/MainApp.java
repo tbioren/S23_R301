@@ -21,7 +21,8 @@ public class MainApp {
 	private final String GENERATION_FRAME_TITLE = "Evolution Viewer";
     private final int FRAME_WIDTH = 600;
     private final int FRAME_HEIGHT = 700;
-    public static final int PFRAME_LENGTH = 650;
+    private final int PFRAME_WIDTH = 653;
+    private final int PFRAME_HEIGHT = 675;
     private final int DELAY = 5;
     public static final int GENERATION_FRAME_WIDTH = 1200;
     public static final int GENERATION_FRAME_HEIGHT = 600;
@@ -239,7 +240,7 @@ public class MainApp {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					chromosome.mutateChromosome(Double.parseDouble(textField.getText())); 
-				} catch(NumberFormatException e1){ //make sure the code doesn't crash if the text field is empty
+				} catch(NumberFormatException e1){ 
 					chromosome.mutateChromosome();
 				}
 				System.out.println("Mutate chromosome.");
@@ -280,7 +281,6 @@ public class MainApp {
 		
 		class SaveListener implements ActionListener {
 			
-			// Something's wrong here because yous shouldn't print the exceptions
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -299,7 +299,7 @@ public class MainApp {
 		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		
 		pFrame.pack();
-		pFrame.setSize(PFRAME_LENGTH, PFRAME_LENGTH);
+		pFrame.setSize(PFRAME_WIDTH, PFRAME_HEIGHT);
 		
 		Timer t = new Timer(DELAY, new ActionListener() {
 			@Override
@@ -331,10 +331,6 @@ public class MainApp {
 		generationFrame.pack();
 		generationFrame.setSize(GENERATION_FRAME_WIDTH, GENERATION_FRAME_HEIGHT);
 	} // runApp
-
-	public void restart() {
-		
-	}
 	
 	
 	/**

@@ -38,12 +38,6 @@ public class PopulationComponent extends JComponent{
 				}
 			}
 		}
-		double horBoxLength = MainApp.PFRAME_LENGTH / (10.0 + 11 * BORDER_TO_BOX_RATIO);
-		double verBoxLength = MainApp.PFRAME_LENGTH / (matrix.length + (matrix.length + 1.0) * BORDER_TO_BOX_RATIO);
-		double bestLength = horBoxLength < verBoxLength ? horBoxLength : verBoxLength;
-		boxWidth = (int)(Math.round(bestLength));
-		borderWidth = (int)(Math.round(bestLength * BORDER_TO_BOX_RATIO));
-		pixelWidth = borderWidth;
 	}
 	
 	public void setGeneration(SimpleChromosome[] g) {
@@ -67,18 +61,18 @@ public class PopulationComponent extends JComponent{
 				}
 			}
 		}
-		double horBoxLength = MainApp.PFRAME_LENGTH / (10.0 + 11 * BORDER_TO_BOX_RATIO);
-		double verBoxLength = MainApp.PFRAME_LENGTH / (matrix.length + (matrix.length + 1.0) * BORDER_TO_BOX_RATIO);
-		double bestLength = horBoxLength < verBoxLength ? horBoxLength : verBoxLength;
-		boxWidth = (int)(Math.round(bestLength));
-		borderWidth = (int)(Math.round(bestLength * BORDER_TO_BOX_RATIO));
-		pixelWidth = borderWidth;
 	}
 	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D)g;
+		double horBoxLength = this.getWidth() / (10.0 + 11 * BORDER_TO_BOX_RATIO);
+		double verBoxLength = this.getHeight() / (matrix.length + (matrix.length + 1.0) * BORDER_TO_BOX_RATIO);
+		double bestLength = horBoxLength < verBoxLength ? horBoxLength : verBoxLength;
+		boxWidth = (int)(Math.round(bestLength));
+		borderWidth = (int)(Math.round(bestLength * BORDER_TO_BOX_RATIO));
+		pixelWidth = borderWidth;
 		g2.translate(borderWidth, borderWidth);
 		for(int i = 0; i < matrix.length; i++) {
 			g2.translate(0, (borderWidth + boxWidth) * i);
