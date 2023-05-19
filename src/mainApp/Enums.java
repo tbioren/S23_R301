@@ -1,7 +1,7 @@
 package mainApp;
 
 enum FitnessMethod {
-    ONES, COMPARE_TO_CHROMOSOME, SWITCHES, TROUGHS
+    ONES, COMPARE_TO_CHROMOSOME, SWITCHES, DECREASING_SIGNIFICANCE, TROUGHS
 }
 
 enum SelectionMethod {
