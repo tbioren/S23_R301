@@ -232,7 +232,7 @@ public class Generation {
 
     public int getAvgHammingDistance() {
         int sum = 0;
-        for(int i=0; i < generation[0].getGenes().length; i++) {
+        for(int i=0; i < generation.length; i++) {
             int zero = 0, one = 0;
             for(int j=0; j < generation[i].getGenes().length; j++) {
                 if(generation[i].getGenes()[j] == 0) {

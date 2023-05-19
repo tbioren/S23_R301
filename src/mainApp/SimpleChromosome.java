@@ -55,6 +55,9 @@ public class SimpleChromosome implements Comparable<SimpleChromosome>{
             case SWITCHES:
                 getFitnessSwitches();
                 break;
+            case DECREASING_SIGNIFICANCE:
+                getFitnessDecreasingSignificance();
+                break;
         }
     }
 
@@ -80,6 +83,14 @@ public class SimpleChromosome implements Comparable<SimpleChromosome>{
             if(genes[i] != genes[i + 1]) fitness++;
         }
         this.fitness = (int) (100*fitness/genes.length);;
+    }
+
+    private void getFitnessDecreasingSignificance() {
+        double fitness = 0;
+        for(int i=0; i < genes.length; i++) {
+            fitness += genes[i] * (genes.length - i);
+        }
+        this.fitness = (int) (100.0*fitness/(101*50.0));
     }
 
     public int getFitness() {
