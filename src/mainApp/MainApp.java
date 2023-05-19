@@ -177,6 +177,8 @@ public class MainApp {
 					} catch (NumberFormatException e1) {
 						genomeLength = 100;
 					}
+					if(genomeLength > 100 || genomeLength < 0)
+						genomeLength = 100;
 
 					generation.setGenomeLength(genomeLength);
 
