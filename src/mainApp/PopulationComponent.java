@@ -90,7 +90,7 @@ public class PopulationComponent extends JComponent{
 								g2.fillRect(c * pixelWidth, r * pixelWidth, pixelWidth, pixelWidth);
 							}
 						} catch(IndexOutOfBoundsException e) {
-							System.out.println(r*10+c);
+							
 						}
 					}
 				}
