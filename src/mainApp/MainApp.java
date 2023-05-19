@@ -38,6 +38,7 @@ public class MainApp {
     private String[] selectionMethods = {"Truncation", "Roulette", "Rank"};
     private boolean crossover;
     private boolean isRunning = false;
+    private boolean fromBeginning = true;
     private GenerationComponent generation = new GenerationComponent();
     private JFrame generationFrame = new JFrame();
     private boolean restarting = false;;
@@ -130,7 +131,6 @@ public class MainApp {
 					if(evolutionButton.getText() == "Restart Evolution"){
 						generation.reset();
 						restarting = false;
-						isRunning = true;
 					}
 					evolutionButton.setText("Pause Evolution");
 					isRunning = true;
@@ -160,9 +160,9 @@ public class MainApp {
 					} catch (NumberFormatException e1) {
 						populationSize = 100;
 					}
-
+					if(fromBeginning)
+						generation.setPopulationSize(populationSize);
 					
-					generation.setPopulationSize(populationSize);
 					try {
 						generationNum = Integer.parseInt(generationTextField.getText());
 					} catch (NumberFormatException e1) {
@@ -178,8 +178,8 @@ public class MainApp {
 					}
 					if(genomeLength > 100 || genomeLength < 0)
 						genomeLength = 100;
-
-					generation.setGenomeLength(genomeLength);
+					if(fromBeginning)
+						generation.setGenomeLength(genomeLength);
 
 					try {
 						elitismPercent = Double.parseDouble(elitismTextField.getText());
@@ -196,6 +196,7 @@ public class MainApp {
 				} else {
 					evolutionButton.setText("Start Evolution");
 					isRunning = false;
+					fromBeginning = false;
 				}
 
 
@@ -320,7 +321,7 @@ public class MainApp {
 				if(generation.isTerminated()) {
 					evolutionButton.setText("Restart Evolution");
 					restarting = true;
-					isRunning = false;
+					fromBeginning = true;
 				}
 				
 			}
