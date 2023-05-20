@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.*;
 
-/**this should be the good version
+/**
  * Class: MainApp
  * @author S23_R301
  * <br>Purpose: Top level class for CSSE220 Project containing main method 
@@ -17,15 +17,13 @@ import javax.swing.*;
  * 
  */
 public class MainApp {
+	public static final int GENERATION_FRAME_WIDTH = 1500, GENERATION_FRAME_HEIGHT = 600;
+
 	private final String FRAME_TITLE = "Chromosome Thingiemabob";
 	private final String GENERATION_FRAME_TITLE = "Evolution Viewer";
-    private final int FRAME_WIDTH = 600;
-    private final int FRAME_HEIGHT = 700;
-    private final int PFRAME_WIDTH = 653;
-    private final int PFRAME_HEIGHT = 675;
+	private final int FRAME_WIDTH = 600, FRAME_HEIGHT = 700;
+    private final int PFRAME_WIDTH = 653, PFRAME_HEIGHT = 675;
     private final int DELAY = 5;
-    public static final int GENERATION_FRAME_WIDTH = 1500;
-    public static final int GENERATION_FRAME_HEIGHT = 600;
     
     private double mutationRate;
     private int populationSize;
@@ -34,7 +32,6 @@ public class MainApp {
     private double elitismPercent;
     private String selectionString;
 	private String fitnessString;
-    
     private SelectionMethod selectionMethod;
 	private FitnessMethod fitnessMethod;
     private String[] selectionMethods = {"Truncation", "Roulette", "Rank", "Best Random Worst"};
@@ -131,7 +128,6 @@ public class MainApp {
 		JButton evolutionButton = new JButton("Start Evolution");
 		interactionPanel.add(evolutionButton);
 		evolutionButton.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (evolutionButton.getText() == "Start Evolution" || evolutionButton.getText() == "Restart Evolution") {
