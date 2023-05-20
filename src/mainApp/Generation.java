@@ -229,8 +229,8 @@ public class Generation {
         for (int i = 0; i < generation.length; i++) {
             byte[] tempGenes = new byte[chromosomeSize];
             for(int j=0; j < tempGenes.length; j++) {
-                //tempGenes[j] = rand.nextBoolean() ? (byte) 1 : (byte) 0;
-                tempGenes[j] = 0;
+                tempGenes[j] = rand.nextBoolean() ? (byte) 1 : (byte) 0;
+                //tempGenes[j] = 0;
             }
             generation[i] = new SimpleChromosome(tempGenes);
         }

@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 import javax.swing.JComponent;
 
 public class PopulationComponent extends JComponent{
-	private SimpleChromosome[] generation;
 	private byte[][][] matrix;
 	private final double BORDER_TO_BOX_RATIO = 1.0 / 10;
 	private final Color COLOR_0 = Color.black;
@@ -19,7 +18,6 @@ public class PopulationComponent extends JComponent{
 	private int matrixLength;
 	
 	public PopulationComponent(SimpleChromosome[] g) {
-		this.generation = g;
 		this.popSize = g.length;
 		
 		for(int i = 0; i < Math.sqrt(Integer.MAX_VALUE); i++) {
@@ -50,7 +48,6 @@ public class PopulationComponent extends JComponent{
 	}
 	
 	public void setGeneration(SimpleChromosome[] g) {
-		this.generation = g;
 		this.popSize = g.length;
 		for(int i = 0; i < Math.sqrt(Integer.MAX_VALUE); i++) {
 			if(i * i == popSize || i * i > popSize) {

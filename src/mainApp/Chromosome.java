@@ -131,11 +131,21 @@ public class Chromosome extends SimpleChromosome{
 		}
 	}
 
+	/**
+	 * Get the file name
+	 * @return
+	 */
 	public String getFileName() {
 		if (geneFile == null) return "No file selected";
 		return geneFile.getName();
 	}
 	
+	/**
+	 * Set the file name
+	 * @param f
+	 * @throws IOException
+	 * @throws IncorrectFileSizeException
+	 */
 	public void setFile(File f) throws IOException, IncorrectFileSizeException {
 		geneFile = f;
 		readToGenes(geneFile);

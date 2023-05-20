@@ -44,9 +44,7 @@ public class MainApp {
     private boolean fromBeginning = true;
     private GenerationComponent generation = new GenerationComponent();
     private JFrame generationFrame = new JFrame();
-    private boolean restarting = false;;
-	
-	/**
+    /**
 	 * Manages the general structure of the app. Serves as the graphics viewer class that manages the 
 	 * JFrame and component and includes the buttons and their listeners. All possible exceptions are
 	 * all so tried and caught in this class.
@@ -94,13 +92,13 @@ public class MainApp {
 		interactionPanel.add(mutationTextField);
 		
 		JLabel selectionTextLabel = new JLabel("Selection ");
-		JComboBox selectionBox = new JComboBox(selectionMethods);
+		JComboBox<String> selectionBox = new JComboBox<String>(selectionMethods);
 		interactionPanel.add(selectionTextLabel);
 		interactionPanel.add(selectionBox);
 		selectionBox.setEnabled(true);
 
 		JLabel fitnessTextLabel = new JLabel("Fitness Method ");
-		JComboBox fitnessBox = new JComboBox(fitnessMethods);
+		JComboBox<String> fitnessBox = new JComboBox<String>(fitnessMethods);
 		interactionPanel.add(fitnessTextLabel);
 		interactionPanel.add(fitnessBox);
 		fitnessBox.setEnabled(true);
@@ -139,7 +137,6 @@ public class MainApp {
 				if (evolutionButton.getText() == "Start Evolution" || evolutionButton.getText() == "Restart Evolution") {
 					if(evolutionButton.getText() == "Restart Evolution"){
 						generation.reset();
-						restarting = false;
 					}
 					evolutionButton.setText("Pause Evolution");
 					isRunning = true;
@@ -345,7 +342,6 @@ public class MainApp {
 				}
 				if(generation.isTerminated()) {
 					evolutionButton.setText("Restart Evolution");
-					restarting = true;
 					fromBeginning = true;
 				}
 				
