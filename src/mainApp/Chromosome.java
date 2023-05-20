@@ -15,9 +15,7 @@ import javax.swing.JFileChooser;
 /**this should be the good version
  * @author S23_R301
  * 
- * The Chromosome class stores the fields and manages the actions related to 
- * individual instances of chromosomes.
- *
+ * Extends SimpleChromosome. Can be drawn, read and written to a file, and modified with clicks.
  */
 public class Chromosome extends SimpleChromosome{
 	private File geneFile;
@@ -26,22 +24,43 @@ public class Chromosome extends SimpleChromosome{
 	private final double GENE_PADDING = 0.1;
 	private ArrayList<Rectangle> geneRectangles;
 	
+	/**
+	 * Default constructor
+	 * @throws IOException
+	 * @throws IncorrectFileSizeException
+	 */
 	public Chromosome() throws IOException, IncorrectFileSizeException {
 		super();
 		geneFile = null;
 		geneRectangles = new ArrayList<Rectangle>();
 	}
 
+	/**
+	 * Constructor with file path
+	 * @param path
+	 * @throws IOException
+	 * @throws IncorrectFileSizeException
+	 */
 	public Chromosome(String path) throws IOException, IncorrectFileSizeException {
 		this(new File(path));
 	}
 	
+	/**
+	 * Constructor with file
+	 * @param f
+	 * @throws IOException
+	 * @throws IncorrectFileSizeException
+	 */
 	public Chromosome(File f) throws IOException, IncorrectFileSizeException {
 		geneFile = f;
 		geneRectangles = new ArrayList<Rectangle>();
 		readToGenes(geneFile);
 	}
 	
+	/**
+	 * Constructor with SimpleChromosome
+	 * @param c SimpleChromosome to be converted to Chromosome
+	 */
 	public Chromosome(SimpleChromosome c) {
 		this.setGenes(c.getGenes());
 		geneFile = null;
@@ -49,9 +68,8 @@ public class Chromosome extends SimpleChromosome{
 	}
 	
 	/**
-	 * Reads the given file into the array genes; throws IncorrectFileSizeException if
+	 * Reads the given file into the array genes. Throws IncorrectFileSizeException if
 	 * the format of the file is different than required (10x10 or 2x10)
-	 * 
 	 * @param f
 	 * @throws IOException
 	 * @throws IncorrectFileSizeException
@@ -141,8 +159,8 @@ public class Chromosome extends SimpleChromosome{
 	}
 	
 	/**
-	 * Set the file name
-	 * @param f
+	 * Set the file
+	 * @param f New file
 	 * @throws IOException
 	 * @throws IncorrectFileSizeException
 	 */

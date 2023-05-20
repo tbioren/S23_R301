@@ -5,8 +5,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * The Generation class stores the fields and manages the actions related to
- * individual instances of generations.
+ * Contains a generation of SimpleChromosomes. Manages evolution.
  */
 public class Generation {
     private SimpleChromosome[] generation;
@@ -14,6 +13,12 @@ public class Generation {
     private long seed;
     private Chromosome bestChromo;
 
+    /**
+     * Constructor with seed, size, and chromosome size
+     * @param seed
+     * @param size
+     * @param chromosomeSize
+     */
     public Generation(long seed, int size, int chromosomeSize) {
         this.seed = seed;
         generation = new SimpleChromosome[size];
@@ -21,25 +26,46 @@ public class Generation {
         createGeneration();
     }
 
+    /**
+     * Constructor with size and chromosome size
+     * @param size
+     * @param chromosomeSize
+     */
     public Generation(int size, int chromosomeSize) {
         this(1, size, chromosomeSize);
     }
 
+    /**
+     * Default Constructor
+     */
     public Generation() {
         this(100, 1000);
     }
     
+    /**
+     * Returns the fittest chromosome
+     * @return Fittest Chromosome
+     */
     public Chromosome getBestChromo() {
     	return bestChromo;
     }
     
+    /**
+     * Returns the current generation
+     * @return SimpleChromosome[] generation
+     */
     public SimpleChromosome[] getGeneration() {
     	return generation;
     }
     
 
     /**
-     * Creates a new generation of chromosomes with random genes
+     * This is the workhorse method. Creates a new generation with varous parameters.
+     * @param fitnessMethod Fitness method to use
+     * @param selectionMethod Selection method to use
+     * @param mutationRate Mutation rate of non-elite chromosomes
+     * @param elitismNumber Percent of the top chromosomes to be passed directly to next generation
+     * @param crossover Use/don't use crossover
      */
     public void evolve(FitnessMethod fitnessMethod, SelectionMethod selectionMethod, double mutationRate, double elitismNumber, boolean crossover) {
         sortGeneration(fitnessMethod);
@@ -54,9 +80,6 @@ public class Generation {
         }
         // Select the best chromosomes from the generation with the given selection method
         switch(selectionMethod) {
-            default:
-                bestChromosomes = selectTopHalf(genSansElites);
-                break;
             case ROULETTE:
                 bestChromosomes = selectRoulette(genSansElites);
                 break;
@@ -69,8 +92,14 @@ public class Generation {
             case BEST_RANDOM_WORST: 
                 bestChromosomes = selectBestRandomWorst(genSansElites);
                 break;
+            default:
+                bestChromosomes = selectTopHalf(genSansElites);
+                break;
         }
-        if(crossover) bestChromosomes = crossover(bestChromosomes); // Crossover the best chromosomes LEAVE COMMENTED FOR M2
+        // Crossover if selected
+        if(crossover) bestChromosomes = crossover(bestChromosomes);
+        
+        // Mutate the non-elites
         ArrayList<SimpleChromosome> newGeneration = mutate(bestChromosomes, mutationRate, genSansElites.size() % 2 == 1);
 
         // Since you cant have half a chromosome, if the elitism number is odd, remove the first chromosome (the worst one)
@@ -269,12 +298,8 @@ public class Generation {
         for(int i=0; i < generation.length; i++) {
             int zero = 0, one = 0;
             for(int j=0; j < generation[i].getGenes().length; j++) {
-                if(generation[i].getGenes()[j] == 0) {
-                    zero ++;
-                }
-                else {
-                    one ++;
-                }
+                if(generation[i].getGenes()[j] == 0) zero ++;
+                else one ++;
             }
             sum += zero*one;
         }

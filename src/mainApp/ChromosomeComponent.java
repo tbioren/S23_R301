@@ -6,13 +6,21 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
-
 import javax.swing.JComponent;
+
+/**
+ * Component that displays the chromosome. Handles clics and the buttons.
+ */
 public class ChromosomeComponent extends JComponent{
 	
     private Chromosome chromo;
     private double mutationRate;
 
+    /**
+     * Default constructor
+     * @throws IOException
+     * @throws IncorrectFileSizeException
+     */
     public ChromosomeComponent() throws IOException, IncorrectFileSizeException {
         chromo = new Chromosome();
         mutationRate = 0.0;
@@ -28,6 +36,10 @@ public class ChromosomeComponent extends JComponent{
 		});
     }
     
+    /**
+     * Constructor with Chromosome
+     * @param chromo
+     */
     public ChromosomeComponent(Chromosome chromo) {
     	this.chromo = chromo;
     	mutationRate = 0.0;
@@ -43,12 +55,16 @@ public class ChromosomeComponent extends JComponent{
 		});
     }
     
+    /**
+     * Set the chromosome
+     * @param chromo New Chromosome
+     */
     public void setChromo(Chromosome chromo) {
     	this.chromo = chromo;
     }
 
     /**
-     * Paints the current chromosome
+     * Paints the chromosome
      */
     @Override
     protected void paintComponent(Graphics g) {
