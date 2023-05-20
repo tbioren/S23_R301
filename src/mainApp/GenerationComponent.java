@@ -11,14 +11,6 @@ import javax.swing.JComponent;
 /**
  * Manages the graph graphics for displaying generation data.
  * 
- * @param int generationSize
- * @param long seed
- * @param int chromosomeSize
- * @param int maxGens
- * @param double mutationRate
- * @param SelectionMethod sm
- * @param double elitismPercent
- * 
  */
 public class GenerationComponent extends JComponent {
 	
@@ -112,6 +104,10 @@ public class GenerationComponent extends JComponent {
   	public void setCrossover(boolean tf) {crossover = tf;}
   	public Chromosome getBestChromo() {return generation.getBestChromo();}
   	
+  	/**
+  	 * resets the graphics window when the user clicks "restart evolution"
+  	 * generates a new generation and resets all the logs
+  	 */
   	public void reset() {
   		generation = new Generation(seed, populationSize, genomeLength);
   		bestLog = new ArrayList<Byte>();
@@ -131,13 +127,16 @@ public class GenerationComponent extends JComponent {
   		terminated = false;
   	}
   	
+  	/**
+  	 *graphs the best, worst, and average fitness and diversity of the generation in an x-y plain. 
+  	 */
   	@Override
   	protected void paintComponent(Graphics g) {
   		super.paintComponent(g);
   		Graphics2D g2 = (Graphics2D)g;
   		
   		
-  		
+  		//draws the empty x-y plain
   		for(int i = 0; i <= 10; i++) {
   			g2.drawString(i*10 + "", 
   					SIDE_OFFSET - 25, 
@@ -156,7 +155,7 @@ public class GenerationComponent extends JComponent {
   		}
   		
   		
-  		
+  		//draws the legend
   		g2.setColor(BEST_COLOR);
   		g2.fillRect((int)(this.getWidth() - SIDE_OFFSET - (this.getWidth() - SIDE_OFFSET * 2) * LEGEND_X_OFFSET_RATIO), 
   				(int)(this.getHeight() - BOTTOM_OFFSET - (this.getHeight() - TOP_OFFSET - BOTTOM_OFFSET) * LEGEND_Y_OFFSET_RATIO),
@@ -194,7 +193,7 @@ public class GenerationComponent extends JComponent {
 				(int)(this.getHeight() - BOTTOM_OFFSET - (this.getHeight() - TOP_OFFSET - BOTTOM_OFFSET) * LEGEND_Y_OFFSET_RATIO + 10 + 20 * 3));
 
   		
-  		
+  		//graphs the generations' fitness data
   		g2.translate(SIDE_OFFSET, this.getHeight()-BOTTOM_OFFSET);
   		xInc = ((double)this.getWidth() - SIDE_OFFSET * 2) / (maxGens - 1);
   		yInc = ((double)this.getHeight() - TOP_OFFSET - BOTTOM_OFFSET) / 100;
@@ -226,6 +225,9 @@ public class GenerationComponent extends JComponent {
   		
   	}
   	
+  	/**
+  	 * evolves the current generation and updates the logs for the best, worst, and average fitness and the diversity.
+  	 */
   	public void update() {
   		if(genCount < maxGens - 1 && generation.getBestFitness(fitnessMethod) < TERMINATION_FITNESS) {
   			generation.evolve(fitnessMethod, selectionMethod, mutationRate, eliteNum, crossover);
@@ -234,14 +236,15 @@ public class GenerationComponent extends JComponent {
 	  		avgLog.add(generation.getAvgFitness(fitnessMethod));
 	  		diversityLog.add((int) (generation.getAvgHammingDistance()*diversityNormalizer));;
 	  		genCount++;
-			generation.printBestFitness(fitnessMethod);
-	  		// System.out.println("Mutation rate: " + mutationRate + " selection: " + selectionMethod + " crossover: " + crossover +
-	  				// " population size: " + populationSize + " generations: " + maxGens + " Genome length: " + genomeLength + " Elitism: " + eliteNum);
   		} else {
   			terminated = true;
   		}
   	}
   	
+  	/**
+  	 * indicates whether the evolution has finished
+  	 * @return terminated
+  	 */
   	public boolean isTerminated() {
   		return terminated;
   	}
@@ -249,6 +252,4 @@ public class GenerationComponent extends JComponent {
   	public SimpleChromosome[] getGeneration() {
     	return generation.getGeneration();
     }
-  	
-  	
 }
