@@ -44,16 +44,19 @@ public class MainApp {
     private boolean fromBeginning = true;
     private GenerationComponent generation = new GenerationComponent();
     private JFrame generationFrame = new JFrame();
+
+
     /**
 	 * Manages the general structure of the app. Serves as the graphics viewer class that manages the 
-	 * JFrame and component and includes the buttons and their listeners. All possible exceptions are
+	 * JFrame and component and includes the buttons and their listeners (described below). All possible exceptions are
 	 * all so tried and caught in this class.
 	 * 
 	 * @throws IOException
 	 * @throws IncorrectFileSizeException
 	 */
+
 	private void runApp() throws IOException, IncorrectFileSizeException {
-		// Set up JFrame and PopulationComponent
+		// Set up Population JFrame and PopulationComponent
 		JFrame pFrame = new JFrame();
 		pFrame.setTitle("Population Viewer");
 		pFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,7 +65,7 @@ public class MainApp {
 		pFrame.setVisible(true);
 		
 		
-		//Set up JFrame and ChromosomeComponent
+		//Set up Chromosome JFrame and ChromosomeComponent
 		JFrame frame = new JFrame();
 		frame.setTitle(FRAME_TITLE);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -71,7 +74,7 @@ public class MainApp {
 		frame.setTitle(chromosome.getFileName());
 		frame.setVisible(true);
 		
-		
+		// Sets up the Generation Graph JFrame
 		generationFrame.setTitle(GENERATION_FRAME_TITLE);
 		generationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		generationFrame.add(generation, BorderLayout.CENTER);
@@ -132,6 +135,7 @@ public class MainApp {
 		interactionPanel.add(evolutionButton);
 		evolutionButton.addActionListener(new ActionListener() {
 
+			// Adds all action listeners to the graph components
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (evolutionButton.getText() == "Start Evolution" || evolutionButton.getText() == "Restart Evolution") {
@@ -226,6 +230,8 @@ public class MainApp {
 
 		});
 		
+
+		// Adds action listener to the crossover checkbox
 		crossoverCheck.addItemListener(new ItemListener(){
 
 			@Override
@@ -246,7 +252,7 @@ public class MainApp {
 		
 		
 		
-		//Manage buttons and text field
+		//Manage buttons and text fields for the Chromosome Panel
 		JPanel mutatePanel = new JPanel();
 		frame.add(mutatePanel, BorderLayout.SOUTH);
 		
@@ -258,6 +264,7 @@ public class MainApp {
 		mutatePanel.add(textFieldLabel);
 		mutatePanel.add(textField);
 
+		// Action listener for the mutation input
 		class MutateListener implements ActionListener {
 
 			@Override
@@ -274,6 +281,7 @@ public class MainApp {
 		
 		mutateButton.addActionListener(new MutateListener());
 		
+		// Implements the action listener for the load button functionality
 		JButton loadButton = new JButton("Load");
 		mutatePanel.add(loadButton);
 		
@@ -300,6 +308,7 @@ public class MainApp {
 		
 		loadButton.addActionListener(new LoadListener());
 		
+		// Implmements the action listener for the save button functionality
 		JButton saveButton = new JButton("Save");
 		mutatePanel.add(saveButton);
 		
@@ -319,12 +328,14 @@ public class MainApp {
 		
 		saveButton.addActionListener(new SaveListener());
 		
+		// Housekeeping for the frames
 		frame.pack();
 		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		
 		pFrame.pack();
 		pFrame.setSize(PFRAME_WIDTH, PFRAME_HEIGHT);
 		
+		// Timer handling
 		Timer t = new Timer(DELAY, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
