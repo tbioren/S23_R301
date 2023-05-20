@@ -93,7 +93,7 @@ public class Generation {
                 bestChromosomes = selectBestRandomWorst(genSansElites);
                 break;
             default:
-                bestChromosomes = selectTopHalf(genSansElites);
+                bestChromosomes = selectTruncation(genSansElites);
                 break;
         }
         // Crossover if selected
@@ -111,12 +111,15 @@ public class Generation {
         for(SimpleChromosome chromosome : eliteChromosomes) {
             newGeneration.add(new SimpleChromosome(chromosome.getGenes()));
         }
-        
-        
+
+        // Copy the new generation to generation[]
         generation = newGeneration.toArray(new SimpleChromosome[0]);
-        
     }
 
+    /**
+     * Prints the average fitness of the generation
+     * @param fitnessMethod Fitness method to evaluate the chromosomes' fitness against
+     */
     public void printAverageFitness(FitnessMethod fitnessMethod) {
         int totalFitness = 0;
         for(SimpleChromosome chromosome : generation) {
@@ -126,11 +129,21 @@ public class Generation {
         System.out.println("Average fitness: " + totalFitness/generation.length);
     }
 
+    /**
+     * Prints the fitness of the fittest chromosome
+     * @param fitnessMethod Fitness method to evaluate the chomosomes' fitness against
+     */
     public void printBestFitness(FitnessMethod fitnessMethod) {
         System.out.println("Best fitness: " + getBestFitness(fitnessMethod));
     }
 
-    // Creates 2 mutant children from each parent
+    /**
+     * Mutates the SimpleChromosomes in the given ArrayList
+     * @param bestChromosomes SimpleChromosomes to mutate
+     * @param mutationRate Mutation rate
+     * @param isOdd True if the size of the generation is odd (not bestChromosomes)
+     * @return Mutated SimpleChromosomes
+     */
     private ArrayList<SimpleChromosome> mutate(ArrayList<SimpleChromosome> bestChromosomes, double mutationRate, boolean isOdd) {
         ArrayList<SimpleChromosome> newGeneration = new ArrayList<SimpleChromosome>();
         for(int i = 0; i < bestChromosomes.size(); i++) {
@@ -144,12 +157,18 @@ public class Generation {
         return newGeneration;
     }
 
-    // Crossover. It's complicated so look at the technical documentation if you're big enough of a nerd to care
+    /**
+     * Crosses genes of parent chromosomes to children
+     * @param bestChromosomes Parents
+     * @return Children
+     */
     private ArrayList<SimpleChromosome> crossover(ArrayList<SimpleChromosome> bestChromosomes) {
-        System.out.println("Crossover");
         int crossoverPoint = bestChromosomes.size() / 2;
         ArrayList<SimpleChromosome> newGeneration = new ArrayList<SimpleChromosome>();
+        // If the length of newGeneration is odd, the last chromosome will be put directly thru because it can't have a partner
         if(bestChromosomes.size() % 2 != 0) newGeneration.add(bestChromosomes.get(bestChromosomes.size() - 1));
+        // Take all of the parents and cross them over. (It looks gross but it's just grabbing the first and second halves of the
+        // parents and splicing them together).
         for(int i=0; i < bestChromosomes.size() - 1; i+=2) {
             byte[] parent1Start = Arrays.copyOfRange(bestChromosomes.get(i).getGenes(), 0, crossoverPoint);
             byte[] parent1End = Arrays.copyOfRange(bestChromosomes.get(i).getGenes(), crossoverPoint, chromosomeSize);
@@ -171,7 +190,11 @@ public class Generation {
         return newGeneration;
     }
 
-    // Selects the best chromosomes from the generation to pass straight through to the next generation
+    /**
+     * Returns the elitismNumber fittest chromosomes
+     * @param elitismNumber Number of fittest SimpleChromosmoes to return
+     * @return elitismNumber fittest SimpleChromosomes
+     */
     private ArrayList<SimpleChromosome> getElites(double elitismNumber) {
         ArrayList<SimpleChromosome> elites = new ArrayList<SimpleChromosome>();
         for(int i=0; i < elitismNumber; i++) {
@@ -180,6 +203,11 @@ public class Generation {
         return elites;
     }
 
+    /**
+     * Returns an ArrayList that is made up of generation[] without the elite chromosomes
+     * @param elites Elite chromosomes to be excluded
+     * @return ArrayList of SimpleChromosomes without the elite chromosomes
+     */
     private ArrayList<SimpleChromosome> trimElites(ArrayList<SimpleChromosome> elites) {
         ArrayList<SimpleChromosome> newGen = new ArrayList<SimpleChromosome>();
 
@@ -190,35 +218,34 @@ public class Generation {
         return newGen;
     }
 
+    /**
+     * Selects the top 50% of the generation to pass on
+     * @param newGen Chromosomes to choose from
+     * @return The best 50% of the generation
+     */
     private ArrayList<SimpleChromosome> selectTruncation(ArrayList<SimpleChromosome> newGen) {
         ArrayList<SimpleChromosome> newGeneration = new ArrayList<SimpleChromosome>();
-        for(int i=9*newGen.size()/10; i < newGen.size(); i++) {
-            for(int j=0; j < 5; j++) {
-                byte[] genes = Arrays.copyOf(newGen.get(i).getGenes(), newGen.get(i).getGenes().length);
-                newGeneration.add(new SimpleChromosome(genes));
-            }
-        }
-        return newGeneration;
-    }
-
-    // Selects the top 1/2 of the generation to pass through to the next generation
-    private ArrayList<SimpleChromosome> selectTopHalf(ArrayList<SimpleChromosome> newGen) {
-        ArrayList<SimpleChromosome> newGeneration = new ArrayList<SimpleChromosome>();
-        for(int i=newGen.size()/2; i < newGen.size(); i++) {
+        for(int i=(newGen.size()+1)/2; i < newGen.size(); i++) {
             byte[] genes = Arrays.copyOf(newGen.get(i).getGenes(), newGen.get(i).getGenes().length);
             newGeneration.add(new SimpleChromosome(genes));
         }
         return newGeneration;
     }
 
-    // Selects the chromosomes from the generation with the given selection method (I'm not sure if this works)
+    /**
+     * Roulette Selection
+     * @param newGen Chromosomes to choose from
+     * @return The chromosomes selected via roulette selection
+     */
     private ArrayList<SimpleChromosome> selectRoulette(ArrayList<SimpleChromosome> newGen) {
-        ArrayList<Integer> roulette = new ArrayList<>();
+        // Sets up the roulette
+        ArrayList<Integer> roulette = new ArrayList<Integer>();
         for (int i = 0; i < newGen.size(); i++) {
             for (int j = 0; j < newGen.get(i).getFitness(); j++) {
                 roulette.add(i);
             }
         }
+        // Selects the chromosomes
         ArrayList<SimpleChromosome> newGeneration = new ArrayList<SimpleChromosome>();
         for(int i=0; i < (newGen.size()+1)/2; i++) {
             int index = roulette.get((int) (Math.random() * roulette.size()));
@@ -228,62 +255,94 @@ public class Generation {
         return newGeneration;
     }
 
-    // Selects the chromosomes from the generation with the given selection method (I'm not sure if this works)
+    /**
+     * Rank Selection
+     * @param newGen Chromosomes to choose from
+     * @return The chromosomes selected via rank selection
+     */
     private ArrayList<SimpleChromosome> selectRank(ArrayList<SimpleChromosome> newGen) {
+        // Set each chromosome's fitness to its rank (so you can use roulette selection)
         for(int i=0; i < newGen.size(); i++) {
             newGen.get(i).setFitness(i+1);
         }
         return selectRoulette(newGen);
     }
 
+    /**
+     * BestRandomWorst Selection
+     * @param newGen Chromosomes to choose from
+     * @return The chromosomes selected via BestRandomWorst selection
+     */
     public ArrayList<SimpleChromosome> selectBestRandomWorst(ArrayList<SimpleChromosome> newGen) {
         ArrayList<SimpleChromosome> nextGen = new ArrayList<SimpleChromosome>();
+        // Select worst chromosomes
         for(int i=0; i < newGen.size()/8; i++) {
             byte[] genes = Arrays.copyOf(newGen.get(i).getGenes(), newGen.get(i).getGenes().length);
             nextGen.add(new SimpleChromosome(genes));
         }
+        // Select best chromosomes
         for(int i=0; i < newGen.size()/4; i++) {
             byte[] genes = Arrays.copyOf(newGen.get(newGen.size() - i-1).getGenes(), newGen.get(newGen.size() - i-1).getGenes().length);
             nextGen.add(new SimpleChromosome(genes));
         }
+        // Select random chromosomes
         while(nextGen.size() < newGen.size()/2) {
             nextGen.add(newGen.get((int) (Math.random() * newGen.size())));
         }
         return nextGen;
     }
 
-    // Fills the genome of each chromosome with seeded random values
+    /**
+     * Fills generation[] with random chromosomes
+     */
     private void createGeneration() {
         Random rand = new Random(seed);
         for (int i = 0; i < generation.length; i++) {
             byte[] tempGenes = new byte[chromosomeSize];
             for(int j=0; j < tempGenes.length; j++) {
                 tempGenes[j] = rand.nextBoolean() ? (byte) 1 : (byte) 0;
-                //tempGenes[j] = 0;
             }
             generation[i] = new SimpleChromosome(tempGenes);
         }
     }
 
-    // Sorts the generation by fitness {least fit, ..., most fit}
+    /**
+     * Sorts the generation by fitness {least fit, ..., most fit}
+     * @param method Fitness method to use
+     */
     private void sortGeneration(FitnessMethod method) {
         for(SimpleChromosome chromo : generation) {
             chromo.setFitness(method);
         }
         Arrays.sort(generation);
     }
-    
+
+    /**
+     * Returns the fitness of the fittest chromosome
+     * @param fitnessMethod Fitness method to use
+     * @return Fitness of the fittest chromosome
+     */
     public byte getBestFitness(FitnessMethod fitnessMethod) {
     	sortGeneration(fitnessMethod);
     	bestChromo = new Chromosome(generation[generation.length - 1]);
     	return (byte)generation[generation.length - 1].getFitness();
     }
-    
+
+    /**
+     * Returns the fitness of the least fit chromosome
+     * @param fitnessMethod Fitness method to use
+     * @return Fitness of the least fit chromosome
+     */
     public byte getWorstFitness(FitnessMethod fitnessMethod) {
     	sortGeneration(fitnessMethod);
     	return (byte)generation[0].getFitness();
     }
-    
+
+    /**
+     * Returns the average fitness of the generation
+     * @param fitnessMethod Fitness method to use
+     * @return Average fitness of the generation
+     */
     public byte getAvgFitness(FitnessMethod fitnessMethod) {
     	int sum = 0;
     	sortGeneration(fitnessMethod);
@@ -293,6 +352,10 @@ public class Generation {
     	return (byte)(sum / generation.length);
     }
 
+    /**
+     * Returns the average Hamming distance of the generation. Hamming distance is a measure of diversity.
+     * @return Average Hamming distance of the generation
+     */
     public int getAvgHammingDistance() {
         int sum = 0;
         for(int i=0; i < generation.length; i++) {
