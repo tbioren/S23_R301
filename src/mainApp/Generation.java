@@ -102,11 +102,6 @@ public class Generation {
         // Mutate the non-elites
         ArrayList<SimpleChromosome> newGeneration = mutate(bestChromosomes, mutationRate, genSansElites.size() % 2 == 1);
 
-        // Since you cant have half a chromosome, if the elitism number is odd, remove the first chromosome (the worst one)
-        if (elitismNumber % 2 != 0){
-            newGeneration.remove(0);
-        }
-
         // Add the elite chromosomes back into the generation
         for(SimpleChromosome chromosome : eliteChromosomes) {
             newGeneration.add(new SimpleChromosome(chromosome.getGenes()));
