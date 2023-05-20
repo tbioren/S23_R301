@@ -8,7 +8,18 @@ import java.util.ArrayList;
 
 import javax.swing.JComponent;
 
-
+/**
+ * Manages the graph graphics for displaying generation data.
+ * 
+ * @param int generationSize
+ * @param long seed
+ * @param int chromosomeSize
+ * @param int maxGens
+ * @param double mutationRate
+ * @param SelectionMethod sm
+ * @param double elitismPercent
+ * 
+ */
 public class GenerationComponent extends JComponent {
 	
   	private final int SIDE_OFFSET = 30;
